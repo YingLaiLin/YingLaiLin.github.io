@@ -4,7 +4,7 @@
 
 <head>
     
-    <title>flink序列化 - 土鸡莱莱的博客</title>
+    <title>java泛型 - 土鸡莱莱的博客</title>
     <meta charset="UTF-8">
     <meta name="keywords" content="摸鱼">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -12,23 +12,23 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="[toc] flink 中的序列化flink 内部对内存进行自主管理, 将数据以二进制结构存储在内存中. 而 Java 的普通类型与内部的二进制结构不同, 需要设计一套相互转化的机制, 使得 flink 能够识别对象的类型, 并将其转化为二进制形式. 步进看一下如何序列化的步进看一下如何序列化的步进看一下如何序列化的步进看一下如何序列化的步进看一下如何序列化的">
+    <meta name="description" content="[toc] 泛型什么是泛型声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口. 为什么要使用泛型在编译期就能发现错误. 泛型的使用类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 泛型类泛型方法泛型的优点泛型的缺点拓展代码的坏味道 利用函数擦除泛型参数 1234567891011121314151617181920public static void main(Str">
 <meta property="og:type" content="article">
-<meta property="og:title" content="flink序列化">
-<meta property="og:url" content="https://yinglailin.github.io/2021/10/24/flink%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+<meta property="og:title" content="java泛型">
+<meta property="og:url" content="https://yinglailin.github.io/2021/10/26/java%E6%B3%9B%E5%9E%8B/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="[toc] flink 中的序列化flink 内部对内存进行自主管理, 将数据以二进制结构存储在内存中. 而 Java 的普通类型与内部的二进制结构不同, 需要设计一套相互转化的机制, 使得 flink 能够识别对象的类型, 并将其转化为二进制形式. 步进看一下如何序列化的步进看一下如何序列化的步进看一下如何序列化的步进看一下如何序列化的步进看一下如何序列化的">
+<meta property="og:description" content="[toc] 泛型什么是泛型声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口. 为什么要使用泛型在编译期就能发现错误. 泛型的使用类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 泛型类泛型方法泛型的优点泛型的缺点拓展代码的坏味道 利用函数擦除泛型参数 1234567891011121314151617181920public static void main(Str">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-10-24T14:30:38.000Z">
-<meta property="article:modified_time" content="2021-10-24T16:48:10.090Z">
+<meta property="article:published_time" content="2021-10-25T22:45:54.000Z">
+<meta property="article:modified_time" content="2021-10-25T16:24:47.933Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1635257602416">
+    <link rel="stylesheet" href="/css/style.css?v=1635257602411">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1635257602416">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1635257602411">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -133,14 +133,14 @@
   <article>
       
           <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
-              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="flink序列化" class="lazyload">
-              <h1>flink序列化</h1>
+              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="java泛型" class="lazyload">
+              <h1>java泛型</h1>
           </div>
       
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2021年10月24日</a>
-    <a><i class="nexmoefont icon-areachart"></i>143 字</a>
+    <a><i class="nexmoefont icon-calendar-fill"></i>2021年10月25日</a>
+    <a><i class="nexmoefont icon-areachart"></i>300 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
 </div>
 
@@ -148,16 +148,28 @@
 
       <span id="more"></span>
 <p>[toc]</p>
-<h1 id="flink-中的序列化"><a href="#flink-中的序列化" class="headerlink" title="flink 中的序列化"></a>flink 中的序列化</h1><p>flink 内部对内存进行自主管理, 将数据以二进制结构存储在内存中. 而 Java 的普通类型与内部的二进制结构不同, 需要设计一套相互转化的机制, 使得 flink 能够识别对象的类型, 并将其转化为二进制形式.</p>
-<p><strong>步进看一下如何序列化的</strong><br><strong>步进看一下如何序列化的</strong><br><strong>步进看一下如何序列化的</strong><br><strong>步进看一下如何序列化的</strong><br><strong>步进看一下如何序列化的</strong></p>
+<h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><h2 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h2><p>声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口.</p>
+<h2 id="为什么要使用泛型"><a href="#为什么要使用泛型" class="headerlink" title="为什么要使用泛型"></a>为什么要使用泛型</h2><p>在编译期就能发现错误.</p>
+<h2 id="泛型的使用"><a href="#泛型的使用" class="headerlink" title="泛型的使用"></a>泛型的使用</h2><p>类 或 接口 + &lt;E&gt;,  E 为实际类型参数.</p>
+<h3 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h3><h3 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h3><h2 id="泛型的优点"><a href="#泛型的优点" class="headerlink" title="泛型的优点"></a>泛型的优点</h2><h2 id="泛型的缺点"><a href="#泛型的缺点" class="headerlink" title="泛型的缺点"></a>泛型的缺点</h2><h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><h3 id="代码的坏味道"><a href="#代码的坏味道" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h3><ol>
+<li><p>利用函数擦除泛型参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    List&lt;String&gt; strings = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    unsafeAdd(strings, Integet.valueOf(<span class="number">42</span>));</span><br><span class="line">    String s = strings.get(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unsafeAdd</span><span class="params">(List list, Object o)</span></span>&#123;</span><br><span class="line">    list.add(o);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Error</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unsafeAdd</span><span class="params">(List&lt;Object&gt; list, Object o)</span></span>&#123;</span><br><span class="line">    list.add(o)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// OK</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unsafeAdd</span><span class="params">(List&lt;?&gt; list, Object o)</span></span>&#123;</span><br><span class="line">    list.add(o)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>使用数组而非泛型列表</p>
+</li>
+</ol>
+<p><strong>数组是协变的</strong></p>
+<p>这意味着如果 Sub 是 Super 的子类型, 则 Sub[] 是 Super[] 的子类型. 如果这样的话, 向其加入一个新的子类对象 Sub1, 在编译期间不会报错, 而在运行时会出现 ArrayStoreException 错误.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ArrayStoreException</span></span><br><span class="line">Object[] objectArray = <span class="keyword">new</span> Long[<span class="number">1</span>];</span><br><span class="line">objectArray[<span class="number">0</span>] = <span class="string">&quot;generic&quot;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
+<h3 id="SubTyping-子类型化"><a href="#SubTyping-子类型化" class="headerlink" title="SubTyping(子类型化)"></a>SubTyping(子类型化)</h3><p>List&lt;String&gt; 是 List 的一个子类型, 而不是 List&lt;Object&gt; 的子类型.</p>
+<h3 id="PECS"><a href="#PECS" class="headerlink" title="PECS"></a>PECS</h3><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
   </article>
 
   
       
     <div class="nexmoe-post-copyright">
         <strong>本文作者：</strong>YingLai Lin<br>
-        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2021/10/24/flink%E5%BA%8F%E5%88%97%E5%8C%96/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2021&#x2F;10&#x2F;24&#x2F;flink%E5%BA%8F%E5%88%97%E5%8C%96&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2021&#x2F;10&#x2F;24&#x2F;flink%E5%BA%8F%E5%88%97%E5%8C%96&#x2F;</a><br>
+        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2021/10/26/java%E6%B3%9B%E5%9E%8B/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2021&#x2F;10&#x2F;26&#x2F;java%E6%B3%9B%E5%9E%8B&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2021&#x2F;10&#x2F;26&#x2F;java%E6%B3%9B%E5%9E%8B&#x2F;</a><br>
         
             <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
         
@@ -223,7 +235,7 @@
 
  
 
-<script async src="/js/app.js?v=1635257602417"></script>
+<script async src="/js/app.js?v=1635257602413"></script>
 
 
 
