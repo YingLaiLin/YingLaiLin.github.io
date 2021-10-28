@@ -12,23 +12,23 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="[toc] 泛型什么是泛型声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口. 为什么要使用泛型在编译期就能发现错误. 泛型的使用类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 泛型类泛型方法泛型的优点 类型安全 可以在编译时检查类型安全, 而非将其拖到运行期 无需强制转换, 避免出错   提高代码的灵活度 同样的代码无需重复书写,     泛型的缺点Java 的泛">
+    <meta name="description" content="[toc] 泛型什么是泛型泛型即”参数化类型”. 泛型的使用泛型类类或接口: 类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 12345678910class Basket&lt;T&gt;&amp;#123;    T item;    private T item;    public void set(T item)&amp;#123;        this.item &#x3D; item;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java泛型">
 <meta property="og:url" content="https://yinglailin.github.io/2021/10/26/java%E6%B3%9B%E5%9E%8B/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="[toc] 泛型什么是泛型声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口. 为什么要使用泛型在编译期就能发现错误. 泛型的使用类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 泛型类泛型方法泛型的优点 类型安全 可以在编译时检查类型安全, 而非将其拖到运行期 无需强制转换, 避免出错   提高代码的灵活度 同样的代码无需重复书写,     泛型的缺点Java 的泛">
+<meta property="og:description" content="[toc] 泛型什么是泛型泛型即”参数化类型”. 泛型的使用泛型类类或接口: 类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 12345678910class Basket&lt;T&gt;&amp;#123;    T item;    private T item;    public void set(T item)&amp;#123;        this.item &#x3D; item;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-25T22:45:54.000Z">
-<meta property="article:modified_time" content="2021-10-28T14:33:42.296Z">
+<meta property="article:modified_time" content="2021-10-28T15:52:40.588Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1635431627178">
+    <link rel="stylesheet" href="/css/style.css?v=1635436411785">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1635431627178">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1635436411785">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -140,7 +140,7 @@
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2021年10月25日</a>
-    <a><i class="nexmoefont icon-areachart"></i>884 字</a>
+    <a><i class="nexmoefont icon-areachart"></i>948 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
 </div>
 
@@ -148,10 +148,13 @@
 
       <span id="more"></span>
 <p>[toc]</p>
-<h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><h2 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h2><p>声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口.</p>
-<h2 id="为什么要使用泛型"><a href="#为什么要使用泛型" class="headerlink" title="为什么要使用泛型"></a>为什么要使用泛型</h2><p>在编译期就能发现错误.</p>
-<h2 id="泛型的使用"><a href="#泛型的使用" class="headerlink" title="泛型的使用"></a>泛型的使用</h2><p>类 或 接口 + &lt;E&gt;,  E 为实际类型参数.</p>
-<h3 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h3><h3 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h3><h2 id="泛型的优点"><a href="#泛型的优点" class="headerlink" title="泛型的优点"></a>泛型的优点</h2><ul>
+<h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><h2 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h2><p>泛型即”参数化类型”.</p>
+<h2 id="泛型的使用"><a href="#泛型的使用" class="headerlink" title="泛型的使用"></a>泛型的使用</h2><h3 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h3><p>类或接口: 类 或 接口 + &lt;E&gt;,  E 为实际类型参数.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Basket</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">    T item;</span><br><span class="line">    <span class="keyword">private</span> T item;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(T item)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.item = item;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">get</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> item;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;E&gt; <span class="function"><span class="keyword">void</span> <span class="title">printArray</span><span class="params">(Iterable&lt;E&gt; src)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (E e : src)&#123;</span><br><span class="line">        System.out.println(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; integerList = Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line">    printArray(integerList); <span class="comment">// 1, 2, 3</span></span><br><span class="line">    List&lt;Double&gt; doubleList = Arrays.asList(<span class="number">1.0</span>,<span class="number">2.0</span>,<span class="number">3.0</span>);</span><br><span class="line">    printArray(doubleList); <span class="comment">// 1.0, 2.0, 3.0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="为什么要使用泛型"><a href="#为什么要使用泛型" class="headerlink" title="为什么要使用泛型?"></a>为什么要使用泛型?</h2><ul>
 <li>类型安全<ul>
 <li>可以在编译时检查类型安全, 而非将其拖到运行期</li>
 <li>无需强制转换, 避免出错</li>
@@ -268,7 +271,7 @@
 
  
 
-<script async src="/js/app.js?v=1635431627180"></script>
+<script async src="/js/app.js?v=1635436411787"></script>
 
 
 
