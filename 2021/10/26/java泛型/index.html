@@ -12,23 +12,23 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="[toc] 泛型什么是泛型声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口. 为什么要使用泛型在编译期就能发现错误. 泛型的使用类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 泛型类泛型方法泛型的优点泛型的缺点拓展代码的坏味道 利用函数擦除泛型参数 1234567891011121314151617181920public static void main(Str">
+    <meta name="description" content="[toc] 泛型什么是泛型声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口. 为什么要使用泛型在编译期就能发现错误. 泛型的使用类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 泛型类泛型方法泛型的优点 类型安全 可以在编译时检查类型安全, 而非将其拖到运行期 无需强制转换, 避免出错   提高代码的灵活度 同样的代码无需重复书写,     泛型的缺点Java 的泛">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java泛型">
 <meta property="og:url" content="https://yinglailin.github.io/2021/10/26/java%E6%B3%9B%E5%9E%8B/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="[toc] 泛型什么是泛型声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口. 为什么要使用泛型在编译期就能发现错误. 泛型的使用类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 泛型类泛型方法泛型的优点泛型的缺点拓展代码的坏味道 利用函数擦除泛型参数 1234567891011121314151617181920public static void main(Str">
+<meta property="og:description" content="[toc] 泛型什么是泛型声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口. 为什么要使用泛型在编译期就能发现错误. 泛型的使用类 或 接口 + &lt;E&gt;,  E 为实际类型参数. 泛型类泛型方法泛型的优点 类型安全 可以在编译时检查类型安全, 而非将其拖到运行期 无需强制转换, 避免出错   提高代码的灵活度 同样的代码无需重复书写,     泛型的缺点Java 的泛">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-25T22:45:54.000Z">
-<meta property="article:modified_time" content="2021-10-26T16:35:29.325Z">
+<meta property="article:modified_time" content="2021-10-28T14:33:42.296Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1635266498608">
+    <link rel="stylesheet" href="/css/style.css?v=1635431627178">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1635266498608">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1635431627178">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -140,8 +140,8 @@
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2021年10月25日</a>
-    <a><i class="nexmoefont icon-areachart"></i>401 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+    <a><i class="nexmoefont icon-areachart"></i>884 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
 </div>
 
       
@@ -151,7 +151,27 @@
 <h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><h2 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h2><p>声明中具有一个或者多个类型参数的类或者接口, 就是泛型类或者接口.</p>
 <h2 id="为什么要使用泛型"><a href="#为什么要使用泛型" class="headerlink" title="为什么要使用泛型"></a>为什么要使用泛型</h2><p>在编译期就能发现错误.</p>
 <h2 id="泛型的使用"><a href="#泛型的使用" class="headerlink" title="泛型的使用"></a>泛型的使用</h2><p>类 或 接口 + &lt;E&gt;,  E 为实际类型参数.</p>
-<h3 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h3><h3 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h3><h2 id="泛型的优点"><a href="#泛型的优点" class="headerlink" title="泛型的优点"></a>泛型的优点</h2><h2 id="泛型的缺点"><a href="#泛型的缺点" class="headerlink" title="泛型的缺点"></a>泛型的缺点</h2><h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><h3 id="代码的坏味道"><a href="#代码的坏味道" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h3><ol>
+<h3 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h3><h3 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h3><h2 id="泛型的优点"><a href="#泛型的优点" class="headerlink" title="泛型的优点"></a>泛型的优点</h2><ul>
+<li>类型安全<ul>
+<li>可以在编译时检查类型安全, 而非将其拖到运行期</li>
+<li>无需强制转换, 避免出错</li>
+</ul>
+</li>
+<li>提高代码的灵活度<ul>
+<li>同样的代码无需重复书写, </li>
+</ul>
+</li>
+</ul>
+<h2 id="泛型的缺点"><a href="#泛型的缺点" class="headerlink" title="泛型的缺点"></a>泛型的缺点</h2><p>Java 的泛型是伪泛型, 为了去兼容 Java 5 之前的旧代码(raw type), 因而其只在编译时去执行类型检查和类型推断, 而在编译为字节码之后并不存储类型信息, 也就是说, 其类型会被擦除.也因此会导致其存在一些问题.</p>
+<ul>
+<li>泛型类共用 class 对象.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; stringList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">List&lt;Integer&gt; integerList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">System.out.println(stringList.getClass() == integerList.getClass()); <span class="comment">// true</span></span><br></pre></td></tr></table></figure></li>
+<li>静态变量被泛型类的所有实例共享</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Food</span></span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Meat</span> <span class="keyword">extends</span> <span class="title">Food</span></span>&#123;&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Vegetable</span> <span class="keyword">extends</span> <span class="title">Food</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Basket</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">    String name;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">double</span> value;</span><br><span class="line">    <span class="keyword">private</span> T item;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(T item)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.item = item;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">get</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Basket(String name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Basket&lt;Food&gt; foodBasket = <span class="keyword">new</span> Basket&lt;&gt;(<span class="string">&quot;foodBasket&quot;</span>);</span><br><span class="line">    Basket&lt;Vegetable&gt; vegetableBasket = <span class="keyword">new</span> Basket&lt;&gt;(<span class="string">&quot;vegetableBasket&quot;</span>);</span><br><span class="line">    foodBasket.value = <span class="number">10.0</span>;  <span class="comment">// should use Class.statiaField here;</span></span><br><span class="line">    vegetableBasket.value = <span class="number">20.0</span>; <span class="comment">// should use Class.statiaField here;</span></span><br><span class="line">    System.out.println(foodBasket.value); <span class="comment">//20.0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>泛型不可用于 Java 的 catch 语句</li>
+</ul>
+<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><h3 id="代码的坏味道"><a href="#代码的坏味道" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h3><ol>
 <li><p>利用函数擦除泛型参数</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    List&lt;String&gt; strings = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    unsafeAdd(strings, Integet.valueOf(<span class="number">42</span>));</span><br><span class="line">    String s = strings.get(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unsafeAdd</span><span class="params">(List list, Object o)</span></span>&#123;</span><br><span class="line">    list.add(o);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Error</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unsafeAdd</span><span class="params">(List&lt;Object&gt; list, Object o)</span></span>&#123;</span><br><span class="line">    list.add(o)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// OK</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unsafeAdd</span><span class="params">(List&lt;?&gt; list, Object o)</span></span>&#123;</span><br><span class="line">    list.add(o)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
 <li><p>使用数组而非泛型列表</p>
@@ -168,7 +188,14 @@
 
 
 <h3 id="SubTyping-子类型化"><a href="#SubTyping-子类型化" class="headerlink" title="SubTyping(子类型化)"></a>SubTyping(子类型化)</h3><p>List&lt;String&gt; 是 List 的一个子类型, 而不是 List&lt;Object&gt; 的子类型.</p>
-<h3 id="PECS"><a href="#PECS" class="headerlink" title="PECS"></a>PECS</h3><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+<h3 id="PECS"><a href="#PECS" class="headerlink" title="PECS"></a>PECS</h3><p>PECS的意思是 Producer Extends Consumer Super，简单理解为如果是生产者则使用Extends，如果是消费者则使用Super. </p>
+<p>这里的生产者, 就意味着你要将数据提供给消费者消费, 也就是数据能够被取出.</p>
+<p>这里的消费者, 就意味着你要将数据拿走消费, 也就是数据能够被存储在新的数据结构中.</p>
+<p>以水果相关的代码为例:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Fruit</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Apple</span> <span class="keyword">extends</span> <span class="title">Fruit</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">clas Plate&lt;T&gt;&#123;</span><br><span class="line">    <span class="keyword">private</span> T item;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Plate</span><span class="params">(T t)</span> </span>&#123; item = t &#125;;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(T t)</span> </span>&#123;item = t&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">get</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> t&#125; ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Plate&lt;Fruit&gt; p = <span class="keyword">new</span> Plate&lt;Apple&gt;(<span class="keyword">new</span> Apple())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
   </article>
 
   
@@ -241,7 +268,7 @@
 
  
 
-<script async src="/js/app.js?v=1635266498610"></script>
+<script async src="/js/app.js?v=1635431627180"></script>
 
 
 
