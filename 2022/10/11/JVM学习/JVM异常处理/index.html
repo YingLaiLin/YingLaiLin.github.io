@@ -15,7 +15,7 @@
     <meta name="description" content="[toc] JVM 异常处理JAVA 中的异常定义JVM 异常处理JVM 中的异常捕获在编译生成的字节码中，每个方法都附带一个异常表(1:1). 异常表中的每一个条目代表一个异常处理器，其由 from 指针、to 指针、target 指针以及所捕获的异常类型构成. 其中, 指针的值是字节码 索引(bytecode index，bci)，用以定位字节码. 以如下代码为例: &amp;#123;.line-">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JVM异常处理.md">
-<meta property="og:url" content="https://yinglailin.github.io/2022/10/11/JVM%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/index.html">
+<meta property="og:url" content="https://yinglailin.github.io/2022/10/11/JVM%E5%AD%A6%E4%B9%A0/JVM%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
 <meta property="og:description" content="[toc] JVM 异常处理JAVA 中的异常定义JVM 异常处理JVM 中的异常捕获在编译生成的字节码中，每个方法都附带一个异常表(1:1). 异常表中的每一个条目代表一个异常处理器，其由 from 指针、to 指针、target 指针以及所捕获的异常类型构成. 其中, 指针的值是字节码 索引(bytecode index，bci)，用以定位字节码. 以如下代码为例: &amp;#123;.line-">
 <meta property="og:locale" content="zh_CN">
@@ -25,10 +25,10 @@
 <meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1666194627871">
+    <link rel="stylesheet" href="/css/style.css?v=1666199391203">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1666194627872">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1666199391203">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -53,7 +53,7 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div><span>文章</span>16</div>
+        <div><span>文章</span>17</div>
         <div><span>标签</span>2</div>
         <div><span>分类</span>0</div>
     </div>
@@ -182,7 +182,7 @@
       
     <div class="nexmoe-post-copyright">
         <strong>本文作者：</strong>YingLai Lin<br>
-        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2022/10/11/JVM%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;10&#x2F;11&#x2F;JVM%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;10&#x2F;11&#x2F;JVM%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86&#x2F;</a><br>
+        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2022/10/11/JVM%E5%AD%A6%E4%B9%A0/JVM%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;10&#x2F;11&#x2F;JVM%E5%AD%A6%E4%B9%A0&#x2F;JVM%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;10&#x2F;11&#x2F;JVM%E5%AD%A6%E4%B9%A0&#x2F;JVM%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86&#x2F;</a><br>
         
             <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
         
@@ -248,7 +248,7 @@
 
  
 
-<script async src="/js/app.js?v=1666194627872"></script>
+<script async src="/js/app.js?v=1666199391204"></script>
 
 
 
