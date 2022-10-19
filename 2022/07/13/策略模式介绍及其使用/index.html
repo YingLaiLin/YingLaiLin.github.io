@@ -4,7 +4,7 @@
 
 <head>
     
-    <title>mac安装mysql错误 - 土鸡莱莱的博客</title>
+    <title>策略模式介绍及其使用 - 土鸡莱莱的博客</title>
     <meta charset="UTF-8">
     <meta name="keywords" content="摸鱼">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -12,23 +12,23 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="[toc] mac 安装 brew 安装 mysql 错误出现 brew cleanup: Error: Permission denied @ apply2files问题简述该问题是权限不足的问题, 但是 homebrew 不允许通过使用 sudo 来赋予权限, 因此只能退而求其次, 赋予当前用户指定文件夹的权限 解决方案12sudo chown -R $(whoami):admin &#x2F;usr">
+    <meta name="description" content="[toc]">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mac安装mysql错误">
-<meta property="og:url" content="https://yinglailin.github.io/2022/05/16/mac%E5%AE%89%E8%A3%85mysql%E9%94%99%E8%AF%AF/index.html">
+<meta property="og:title" content="策略模式介绍及其使用">
+<meta property="og:url" content="https://yinglailin.github.io/2022/07/13/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="[toc] mac 安装 brew 安装 mysql 错误出现 brew cleanup: Error: Permission denied @ apply2files问题简述该问题是权限不足的问题, 但是 homebrew 不允许通过使用 sudo 来赋予权限, 因此只能退而求其次, 赋予当前用户指定文件夹的权限 解决方案12sudo chown -R $(whoami):admin &#x2F;usr">
+<meta property="og:description" content="[toc]">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-05-15T20:55:26.000Z">
-<meta property="article:modified_time" content="2022-05-15T13:03:11.659Z">
+<meta property="article:published_time" content="2022-07-13T00:04:14.000Z">
+<meta property="article:modified_time" content="2022-07-12T16:04:14.986Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1666194627877">
+    <link rel="stylesheet" href="/css/style.css?v=1666194627874">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1666194627877">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1666194627874">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -133,14 +133,14 @@
   <article>
       
           <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
-              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="mac安装mysql错误" class="lazyload">
-              <h1>mac安装mysql错误</h1>
+              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="策略模式介绍及其使用" class="lazyload">
+              <h1>策略模式介绍及其使用</h1>
           </div>
       
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2022年05月15日</a>
-    <a><i class="nexmoefont icon-areachart"></i>111 字</a>
+    <a><i class="nexmoefont icon-calendar-fill"></i>2022年07月13日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
 </div>
 
@@ -148,11 +148,6 @@
 
       <span id="more"></span>
 <p>[toc]</p>
-<h1 id="mac-安装-brew-安装-mysql-错误出现-brew-cleanup-Error-Permission-denied-apply2files"><a href="#mac-安装-brew-安装-mysql-错误出现-brew-cleanup-Error-Permission-denied-apply2files" class="headerlink" title="mac 安装 brew 安装 mysql 错误出现 brew cleanup: Error: Permission denied @ apply2files"></a>mac 安装 brew 安装 mysql 错误出现 brew cleanup: Error: Permission denied @ apply2files</h1><h2 id="问题简述"><a href="#问题简述" class="headerlink" title="问题简述"></a>问题简述</h2><p>该问题是权限不足的问题, 但是 homebrew 不允许通过使用 sudo 来赋予权限, 因此只能退而求其次, 赋予当前用户指定文件夹的权限</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo chown -R $(whoami):admin /usr/<span class="hljs-built_in">local</span>/* \<br>&amp;&amp; sudo chmod -R g+rwx /usr/<span class="hljs-built_in">local</span>/*<br></code></pre></td></tr></table></figure>
-
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://github.com/Homebrew/homebrew-core/issues/45009">brew cleanup: Error: Permission denied @ apply2files #45009</a></p>
-<p>[2] <a target="_blank" rel="noopener" href="https://www.codeleading.com/article/11993956587/">brew cleanup遇到Permission denied @ apply2files</a></p>
 
   </article>
 
@@ -160,7 +155,7 @@
       
     <div class="nexmoe-post-copyright">
         <strong>本文作者：</strong>YingLai Lin<br>
-        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2022/05/16/mac%E5%AE%89%E8%A3%85mysql%E9%94%99%E8%AF%AF/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;05&#x2F;16&#x2F;mac%E5%AE%89%E8%A3%85mysql%E9%94%99%E8%AF%AF&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;05&#x2F;16&#x2F;mac%E5%AE%89%E8%A3%85mysql%E9%94%99%E8%AF%AF&#x2F;</a><br>
+        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2022/07/13/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;07&#x2F;13&#x2F;%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;07&#x2F;13&#x2F;%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8&#x2F;</a><br>
         
             <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
         
@@ -226,7 +221,7 @@
 
  
 
-<script async src="/js/app.js?v=1666194627878"></script>
+<script async src="/js/app.js?v=1666194627875"></script>
 
 
 
