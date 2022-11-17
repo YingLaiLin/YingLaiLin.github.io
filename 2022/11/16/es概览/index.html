@@ -20,15 +20,15 @@
 <meta property="og:description" content="[toc] ES 概览基本概念ElasticSearch是一款非常强大的、基于 Lucene 的开源搜索及分析引擎, 可以用于构建近实时的分布式搜索分析引擎. 其内部通过使用 RESTful API, 以隐藏 Lucene 的复杂性. 与关系型数据库的概念对比| 关系型数据库      | ES    || ———– | ———– || 数据库      | 索引(index)">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-15T23:22:01.000Z">
-<meta property="article:modified_time" content="2022-11-17T18:44:12.821Z">
+<meta property="article:modified_time" content="2022-11-17T19:31:51.644Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="ES">
 <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1668710659820">
+    <link rel="stylesheet" href="/css/style.css?v=1668713523137">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1668710659820">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1668713523137">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -178,8 +178,8 @@
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2022年11月15日</a>
-    <a><i class="nexmoefont icon-areachart"></i>280 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+    <a><i class="nexmoefont icon-areachart"></i>679 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
 </div>
 
       
@@ -198,14 +198,79 @@
 </li>
 </ul>
 <p>分析类场景<br>    - 日志管理与分析<br>    - 安全指标监控<br>    - Web抓取舆情分析</p>
-<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>数据格式如下:</p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>在实践前, 先确定数据格式如下:</p>
 <blockquote>
-<p>{<br>  “account_number”: 0,<br>  “balance”: 16623,<br>  “firstname”: “Bradshaw”,<br>  “lastname”: “Mckenzie”,<br>  “age”: 29,<br>  “gender”: “F”,<br>  “address”: “244 Columbus Place”,<br>  “employer”: “Euron”,<br>  “email”: “<a href="mailto:&#98;&#x72;&#x61;&#x64;&#115;&#x68;&#97;&#x77;&#109;&#x63;&#x6b;&#101;&#110;&#x7a;&#x69;&#101;&#x40;&#x65;&#117;&#x72;&#111;&#110;&#x2e;&#x63;&#x6f;&#109;">&#98;&#x72;&#x61;&#x64;&#115;&#x68;&#97;&#x77;&#109;&#x63;&#x6b;&#101;&#110;&#x7a;&#x69;&#101;&#x40;&#x65;&#117;&#x72;&#111;&#110;&#x2e;&#x63;&#x6f;&#109;</a>“,<br>  “city”: “Hobucken”,<br>  “state”: “CO”<br>}</p>
+<p>{<br>  “account_number”: 0,<br>  “balance”: 16623,<br>  “firstname”: “Bradshaw”,<br>  “lastname”: “Mckenzie”,<br>  “age”: 29,<br>  “gender”: “F”,<br>  “address”: “244 Columbus Place”,<br>  “employer”: “Euron”,<br>  “email”: “<a href="mailto:&#98;&#x72;&#97;&#x64;&#x73;&#x68;&#x61;&#x77;&#109;&#x63;&#x6b;&#x65;&#x6e;&#x7a;&#105;&#x65;&#64;&#101;&#x75;&#114;&#x6f;&#110;&#x2e;&#x63;&#x6f;&#x6d;">&#98;&#x72;&#97;&#x64;&#x73;&#x68;&#x61;&#x77;&#109;&#x63;&#x6b;&#x65;&#x6e;&#x7a;&#105;&#x65;&#64;&#101;&#x75;&#114;&#x6f;&#110;&#x2e;&#x63;&#x6f;&#x6d;</a>“,<br>  “city”: “Hobucken”,<br>  “state”: “CO”<br>}</p>
 </blockquote>
 <hr>
-<p><strong>查询所有</strong></p>
+<p><strong>数据准备</strong><br><a target="_blank" rel="noopener" href="https://github.com/elastic/elasticsearch/blob/v6.8.18/docs/src/test/resources/accounts.json">数据下载地址</a></p>
+<p>将accounts.json拷贝至指定目录, 执行如下命令:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl -H &quot;Content-Type: application/json&quot; -XPOST &quot;localhost:9200/bank/_bulk?pretty&amp;refresh&quot; --data-binary &quot;@/opt/accounts.json&quot;<br></code></pre></td></tr></table></figure>
+
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p><strong>查询所有</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java">GET /bank/_search<br>&#123;<br>  <span class="hljs-string">&quot;query&quot;</span>: &#123; <span class="hljs-string">&quot;match_all&quot;</span>: &#123;&#125; &#125;,<br>  <span class="hljs-string">&quot;sort&quot;</span>: [<br>    &#123; <span class="hljs-string">&quot;account_number&quot;</span>: <span class="hljs-string">&quot;asc&quot;</span> &#125;<br>  ]<br>&#125;<br><br></code></pre></td></tr></table></figure>
 <p>match_all表示查询所有的数据，sort即按照什么字段排序</p>
+<h4 id="查询参数解释"><a href="#查询参数解释" class="headerlink" title="查询参数解释:"></a>查询参数解释:</h4><ul>
+<li>_source 用于指示是否查询只需要的字段[3]<ul>
+<li>false 标识返回结果中无 _source 内容</li>
+<li>使用数组指定多个字段 “_source”: [“name”,”level”]</li>
+<li>使用 include/exclude 来包含显示或者排除字段   <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-string">&quot;_source&quot;</span>: &#123;<br>    <span class="hljs-attr">&quot;includes&quot;</span>: [<span class="hljs-string">&quot;name&quot;</span>,<span class="hljs-string">&quot;level&quot;</span>]<br>&#125;,<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="返回结果的字段解释"><a href="#返回结果的字段解释" class="headerlink" title="返回结果的字段解释:"></a>返回结果的字段解释:</h4><p><strong>_shards</strong>[1]<br>提供关于集合相关的分片信息</p>
+<ul>
+<li>_shards.total 分片总数(包含主备)</li>
+<li>_shards.sueeceeful 需主备分片节点数</li>
+<li></li>
+</ul>
+<p><strong>通用字段</strong>[2]    </p>
+<ul>
+<li>took <ul>
+<li>Elasticsearch 运行查询所花费的时间（ms)</li>
+<li>具体为从接收请求到协调节点准备发送数据</li>
+<li>不包含<ul>
+<li>发请求到 es 的时间</li>
+<li>在搜索线程池排队等待的时间</li>
+<li>发送数据到客户端的时间</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>timed_out <ul>
+<li>bool 字段, 标识搜索请求是否超时</li>
+</ul>
+</li>
+</ul>
+<p><strong>hits</strong><br>包含返回的文档集合和元信息(metadata)</p>
+<ul>
+<li><p>total</p>
+<ul>
+<li>value 匹配的文档数</li>
+<li>relation <ul>
+<li>eq 指示是精确匹配</li>
+<li>gte 指示为下界</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>max_score</p>
+<ul>
+<li>返回结果中文档最匹配的评分, 如果为空, 则说明未按照 _score 排序</li>
+</ul>
+</li>
+<li><p>hits </p>
+<ul>
+<li>_index 包含该文档的集合</li>
+<li>_score 标识返回文档的相关性(32 位浮点数, 使用match_all时不适用)</li>
+<li>_source 集合中的文档(JSON 格式)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>批量查询</strong></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html">ES GET 文档</a><br>[2] <a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html#search-api-response-body">ES Search 文档</a><br>[3] <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8557fbbafc4b">ES _source 关键字使用</a></p>
 
   </article>
 
@@ -283,7 +348,7 @@
 
  
 
-<script async src="/js/app.js?v=1668710659820"></script>
+<script async src="/js/app.js?v=1668713523138"></script>
 
 
 
