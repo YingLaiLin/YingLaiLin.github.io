@@ -22,16 +22,16 @@
 <meta property="og:image" content="https://yinglailin.github.io/2022/11/images/6e1deb62789526bb4be91244dc1a4dc8bdf56c39f670ea747e7120367ee32268.png">
 <meta property="og:image" content="https://yinglailin.github.io/2022/11/images/b67646ef6c1a6e72d7ac8c740005e5deb23530ad5a3f8fa15b02d3cae973fd58.png">
 <meta property="article:published_time" content="2022-11-30T01:15:22.000Z">
-<meta property="article:modified_time" content="2022-11-29T17:58:45.824Z">
+<meta property="article:modified_time" content="2022-11-29T18:01:34.719Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yinglailin.github.io/2022/11/images/6e1deb62789526bb4be91244dc1a4dc8bdf56c39f670ea747e7120367ee32268.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1669744731139">
+    <link rel="stylesheet" href="/css/style.css?v=1669744900291">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1669744731139">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1669744900291">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -181,7 +181,7 @@
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2022年11月30日</a>
-    <a><i class="nexmoefont icon-areachart"></i>540 字</a>
+    <a><i class="nexmoefont icon-areachart"></i>699 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 2 分钟</a>
 </div>
 
@@ -198,8 +198,16 @@
 <p><strong>相关概念</strong><br>知识库: 知识库中的知识可以用 (主语、关系、宾语) 这样的相互连接的三元组形式表示，<br>分类:<br>    - 从应用领域的角度来看，KBQA可以分为<strong>开放领域</strong>知识问答 ，如百科知识的问答，和<strong>特定领域</strong>知识问答 ，如金融领域的问题回答。</p>
 <h2 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h2><h3 id="语义解析"><a href="#语义解析" class="headerlink" title="语义解析"></a>语义解析</h3><p>语义解析: 主要思想是将<strong>非结构化的自然语言问题转化为一系列逻辑形式</strong>. 通过对逻辑形式的自底向上分析，查询知识库得到能够表达语义的逻辑形式，即无二义性的表达式。但这些方法都是基于符号逻辑的，<strong>符号的匹配会造成语义鸿沟的问题</strong>。</p>
 <h3 id="信息检索"><a href="#信息检索" class="headerlink" title="信息检索"></a>信息检索</h3><p>信息检索:  从问题中提取信息，利用知识库获取候选答案，然后对候选答案进行排序，得到最终答案.</p>
-<h3 id="语义表示方法"><a href="#语义表示方法" class="headerlink" title="语义表示方法"></a>语义表示方法</h3><p><strong>基于卷积神经网络(CNN) 的语义表示方法</strong><br>基于 CNN的语义表示学习是通过CNN对句子进行扫描，抽取特征，选择特征，最后组合成句子的表示向量. 具体地, 从左到右对一个滑动窗口对句子进行扫描, 每个滑动窗口有多个单词, 其中单词由向量表示.</p>
+<h3 id="语义表示方法"><a href="#语义表示方法" class="headerlink" title="语义表示方法"></a>语义表示方法</h3><p><strong>基于卷积神经网络(CNN) 的语义表示方法</strong><br>基于 CNN的语义表示学习是通过CNN对句子进行扫描，抽取特征，选择特征，最后组合成句子的表示向量. 具体地, 其步骤如下:</p>
+<ul>
+<li>从左到右对一个滑动窗口对句子进行扫描, 每个滑动窗口有多个单词, 其中单词由向量表示.</li>
+<li>在滑动窗口内，通过卷积（convolution）操作，进行特征抽取。这样，在各个位置上得到一系列特征。之后再通过最大池化（max pooling）操作对特征进行选择。</li>
+<li>重复以上操作多次，得到多个向量表示，将这些向量连接起来得到整个句子的语义表示.</li>
+<li>最后将多层交叠的卷积和最大池化操作，最终将句子表示为一个固定长度的向量, 然后在模型定测增加一个分类器用于多种有监督的 nlp 任务上.</li>
+</ul>
 <p><img data-fancybox="gallery" data-sizes="auto" data-src="../../images/b67646ef6c1a6e72d7ac8c740005e5deb23530ad5a3f8fa15b02d3cae973fd58.png" alt="picture 14" class="lazyload">  </p>
+<p>优点:</p>
+<p>缺点: </p>
 
   </article>
 
@@ -273,7 +281,7 @@
 
  
 
-<script async src="/js/app.js?v=1669744731140"></script>
+<script async src="/js/app.js?v=1669744900292"></script>
 
 
 
