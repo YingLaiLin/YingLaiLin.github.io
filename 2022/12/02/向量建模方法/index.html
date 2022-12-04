@@ -12,23 +12,29 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="[toc]">
+    <meta name="description" content="[toc] 向量建模方法核心思想:    确定候选答案: 首先根据问题中的主题词在知识库中确定候选答案。 获取映射和查询的表达: 把问题和候选答案都映射到一个低维空间，得到它们的分布式表达（Distributed Embedding） 训练: 通过训练数据对该分布式表达进行训练，使得问题向量和它对应的正确答案向量在低维空间的关联得分（通常以点乘为形式）尽量高。当模型训练完成后，则可根据候选答案的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="向量建模方法">
 <meta property="og:url" content="https://yinglailin.github.io/2022/12/02/%E5%90%91%E9%87%8F%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="[toc]">
+<meta property="og:description" content="[toc] 向量建模方法核心思想:    确定候选答案: 首先根据问题中的主题词在知识库中确定候选答案。 获取映射和查询的表达: 把问题和候选答案都映射到一个低维空间，得到它们的分布式表达（Distributed Embedding） 训练: 通过训练数据对该分布式表达进行训练，使得问题向量和它对应的正确答案向量在低维空间的关联得分（通常以点乘为形式）尽量高。当模型训练完成后，则可根据候选答案的">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yinglailin.github.io/2022/12/images/6892cbd36292877fe04f8926b657b0f3b68618a7e8b584a5f7eb049dae91c394.png">
+<meta property="og:image" content="https://yinglailin.github.io/2022/12/images/c16c6fbc7ca3c4908b28206f042251ad40827c5eb53c316c749668fe91d31285.png">
+<meta property="og:image" content="https://yinglailin.github.io/2022/12/images/2dc5120a7539c407b03560c8b161aad56d9f88a1fac91227a9cc5acb3e6b1010.png">
+<meta property="og:image" content="https://yinglailin.github.io/2022/12/images/955c1f78e8a2b94600a99f03fab7a45d5b07e7f4cca568475d659bc3c56b3b7b.png">
+<meta property="og:image" content="https://yinglailin.github.io/2022/12/images/a4223ede761123f45872004dd4ed1a5740c78b55d99c45f768a54fd6179e747d.png">
 <meta property="article:published_time" content="2022-12-02T01:17:28.000Z">
-<meta property="article:modified_time" content="2022-12-01T17:17:28.639Z">
+<meta property="article:modified_time" content="2022-12-04T16:15:58.840Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yinglailin.github.io/2022/12/images/6892cbd36292877fe04f8926b657b0f3b68618a7e8b584a5f7eb049dae91c394.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1669915060996">
+    <link rel="stylesheet" href="/css/style.css?v=1670170563322">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1669915060996">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1670170563322">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -178,14 +184,57 @@
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2022年12月02日</a>
-    <a><i class="nexmoefont icon-areachart"></i>1 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.1k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
 </div>
 
       
 
       <span id="more"></span>
 <p>[toc]</p>
+<h1 id="向量建模方法"><a href="#向量建模方法" class="headerlink" title="向量建模方法"></a>向量建模方法</h1><p>核心思想:  </p>
+<ul>
+<li><strong>确定候选答案</strong>: 首先根据问题中的主题词在知识库中确定候选答案。</li>
+<li><strong>获取映射和查询的表达</strong>: 把问题和候选答案都映射到一个低维空间，得到它们的分布式表达（Distributed Embedding）</li>
+<li><strong>训练</strong>: 通过训练数据对该分布式表达进行训练，使得问题向量和它对应的正确答案向量在低维空间的关联得分（通常以点乘为形式）尽量高。当模型训练完成后，则可根据候选答案的向量表达和问题表达的得分进行筛选，找出得分最高的作为最终答案。</li>
+</ul>
+<p>核心问题:</p>
+<ul>
+<li>How to embedding: 如何将查询和答案映射到低维空间</li>
+<li>How to train: 如何训练低维空间的 embedding? 有限的数据如何训练处有效的 embedding.</li>
+</ul>
+<h2 id="查询与答案-embedding-表示的获取"><a href="#查询与答案-embedding-表示的获取" class="headerlink" title="查询与答案 embedding 表示的获取"></a>查询与答案 embedding 表示的获取</h2><p><strong>问题的表达</strong><br><strong>词袋表示</strong><br>输入次向量维度 N = 字典大小 + 知识库实体数据 + 知识库实体关系数目, 以 multi-hot 形式表示</p>
+<p>用代表N维的问题向量，用矩阵将N维的问题向量映射到维的低维空间，那么问题的分布式表达即 $f(q) = W\phi(q)$</p>
+<p><strong>答案的分布式表达</strong></p>
+<ol>
+<li><strong>基于词袋表示</strong><br>  简化版的词袋模型, 但是答案是知识库实体的 one-hot 表达, 这样就没有将知识库信息移入输入空间 </li>
+<li><strong>multi-hot 表示</strong><ul>
+<li>首先通过主题词定位图中节点, 则该节点到答案节点的路径登记为 mutl-hot 变量保存下来</li>
+<li>如路径(barack obama, place of birth, honolulu)是一跳，路径(barack obama, people.person.place of birth, location.location.containedby, hawaii) 是两跳。因此这种表示是一种3-hot或4-hot的表示(节点级别上)。</li>
+</ul>
+</li>
+<li><strong>融合知识库子图的表示</strong><ul>
+<li>每个候选答案对应的知识库子图（1跳或2跳范围）也加入到输入向量中，假设该子图包含C个实体和D个关系，那么我们最终的表达是一种 (3+C+D)-hot或者(4+C+D)-hot的表达, 即 multi-hot</li>
+<li>对关系的方向进行区分, 因为输入向量大小变为 字典大小 + 2 * (知识库实体数据 + 知识库实体关系数目)</li>
+</ul>
+</li>
+</ol>
+<p>用代表N维的问题向量，用矩阵将N维的问题向量映射到维的低维空间，那么问题的分布式表达即 $f(q) = W\Phi(q)$</p>
+<p><strong>向量得分</strong><br>得分函数定义为二者分布式表达的点乘, 其整体流程如下所示:</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="../../images/6892cbd36292877fe04f8926b657b0f3b68618a7e8b584a5f7eb049dae91c394.png" alt="picture 3" class="lazyload">  </p>
+<h2 id="如何训练-embedding"><a href="#如何训练-embedding" class="headerlink" title="如何训练 embedding"></a>如何训练 embedding</h2><p><img data-fancybox="gallery" data-sizes="auto" data-src="../../images/c16c6fbc7ca3c4908b28206f042251ad40827c5eb53c316c749668fe91d31285.png" alt="picture 4" class="lazyload">  </p>
+<p>在 margin-based ranking 损失函数中, $\bar a$ 表示负样本集 $\bar A$ 中的一个负样本, m 是值为 0.1 的 margin. 最小化这个损失函数，意味着我们希望正确答案和问题的得分要比任意错误答案的得分高出一个margin。</p>
+<p>和训练word embedding一样，为减少计算量，我们通过采样的方式构造负样本，50%来自随机挑选，50%来自与问题主题词实体相连的其它路径。</p>
+<p>由于 webquestion 样本数过小, 作者基于 freebase 中出现频率高于 5 次实体的三元组构造了对应子集(2.2M 实体 和 7K 关系), 对于每一个三元组如(subject, type1.type2.predicate, object)，我们通过自动化的方式，生成这样的问题答案对:</p>
+<blockquote>
+<p>Quesiton：“What is the predicate of the type2subject?” Answer：object</p>
+</blockquote>
+<p>接着, 将形式化语言提取为三元组(subject, “text string”, object) 通过少数模板作同样的变换.其形式如下所示:</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="../../images/2dc5120a7539c407b03560c8b161aad56d9f88a1fac91227a9cc5acb3e6b1010.png" alt="picture 5" class="lazyload">  </p>
+<p>由于扩增版的数据集，问题大多数都是自动构造的，缺乏多样性和真实性。 我们希望训练数据中问题的分布式表达尽量贴近它所类似的真实问题的分布式表达。因此，作者在WikiAnswers中抓取了2.2M问题（不含答案），通过问题的分类标签，将它们分为了350k个<strong>类簇</strong>（可以理解为每个类簇里的自然语言问题它所表达的意思是一样的）,如下所示:</p>
+<p><img data-fancybox="gallery" data-sizes="auto" data-src="../../images/955c1f78e8a2b94600a99f03fab7a45d5b07e7f4cca568475d659bc3c56b3b7b.png" alt="picture 6" class="lazyload">  </p>
+<p>接着就可以进行多任务学习:<br><img data-fancybox="gallery" data-sizes="auto" data-src="../../images/a4223ede761123f45872004dd4ed1a5740c78b55d99c45f768a54fd6179e747d.png" alt="picture 7" class="lazyload">  </p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/25824501">揭开知识库问答KB-QA的面纱4·向量建模篇</a></p>
 
   </article>
 
@@ -259,7 +308,7 @@
 
  
 
-<script async src="/js/app.js?v=1669915060996"></script>
+<script async src="/js/app.js?v=1670170563323"></script>
 
 
 
