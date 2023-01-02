@@ -12,12 +12,12 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="[toc] 向量建模方法核心思想:    确定候选答案: 首先根据问题中的主题词在知识库中确定候选答案。 获取映射和查询的表达: 把问题和候选答案都映射到一个低维空间，得到它们的分布式表达（Distributed Embedding） 训练: 通过训练数据对该分布式表达进行训练，使得问题向量和它对应的正确答案向量在低维空间的关联得分（通常以点乘为形式）尽量高。当模型训练完成后，则可根据候选答案的">
+    <meta name="description" content="[TOC] 向量建模方法核心思想:    确定候选答案: 首先根据问题中的主题词在知识库中确定候选答案。 获取映射和查询的表达: 把问题和候选答案都映射到一个低维空间，得到它们的分布式表达（Distributed Embedding） 训练: 通过训练数据对该分布式表达进行训练，使得问题向量和它对应的正确答案向量在低维空间的关联得分（通常以点乘为形式）尽量高。当模型训练完成后，则可根据候选答案">
 <meta property="og:type" content="article">
 <meta property="og:title" content="向量建模方法">
 <meta property="og:url" content="https://yinglailin.github.io/2022/12/02/%E5%90%91%E9%87%8F%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="[toc] 向量建模方法核心思想:    确定候选答案: 首先根据问题中的主题词在知识库中确定候选答案。 获取映射和查询的表达: 把问题和候选答案都映射到一个低维空间，得到它们的分布式表达（Distributed Embedding） 训练: 通过训练数据对该分布式表达进行训练，使得问题向量和它对应的正确答案向量在低维空间的关联得分（通常以点乘为形式）尽量高。当模型训练完成后，则可根据候选答案的">
+<meta property="og:description" content="[TOC] 向量建模方法核心思想:    确定候选答案: 首先根据问题中的主题词在知识库中确定候选答案。 获取映射和查询的表达: 把问题和候选答案都映射到一个低维空间，得到它们的分布式表达（Distributed Embedding） 训练: 通过训练数据对该分布式表达进行训练，使得问题向量和它对应的正确答案向量在低维空间的关联得分（通常以点乘为形式）尽量高。当模型训练完成后，则可根据候选答案">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://yinglailin.github.io/2022/12/images/6892cbd36292877fe04f8926b657b0f3b68618a7e8b584a5f7eb049dae91c394.png">
 <meta property="og:image" content="https://yinglailin.github.io/2022/12/images/c16c6fbc7ca3c4908b28206f042251ad40827c5eb53c316c749668fe91d31285.png">
@@ -25,16 +25,16 @@
 <meta property="og:image" content="https://yinglailin.github.io/2022/12/images/955c1f78e8a2b94600a99f03fab7a45d5b07e7f4cca568475d659bc3c56b3b7b.png">
 <meta property="og:image" content="https://yinglailin.github.io/2022/12/images/a4223ede761123f45872004dd4ed1a5740c78b55d99c45f768a54fd6179e747d.png">
 <meta property="article:published_time" content="2022-12-02T01:17:28.000Z">
-<meta property="article:modified_time" content="2022-12-04T16:15:58.840Z">
+<meta property="article:modified_time" content="2022-12-10T18:03:38.495Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yinglailin.github.io/2022/12/images/6892cbd36292877fe04f8926b657b0f3b68618a7e8b584a5f7eb049dae91c394.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1670170563322">
+    <link rel="stylesheet" href="/css/style.css?v=1672679613977">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1670170563322">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1672679613977">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -59,7 +59,7 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div><span>文章</span>29</div>
+        <div><span>文章</span>33</div>
         <div><span>标签</span>12</div>
         <div><span>分类</span>3</div>
     </div>
@@ -163,7 +163,7 @@
     
 </aside>
     <div class="nexmoe-copyright">
-        &copy; 2022 YingLai Lin
+        &copy; 2023 YingLai Lin
         Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
         & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
         <br><a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://i.dawnlab.me/c0268c1e6cfd0863d6ba35be1575941a.png" width="150px"></a><script data-ad-client="ca-pub-2058306854838448" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -191,7 +191,8 @@
       
 
       <span id="more"></span>
-<p>[toc]</p>
+
+<p>[TOC]</p>
 <h1 id="向量建模方法"><a href="#向量建模方法" class="headerlink" title="向量建模方法"></a>向量建模方法</h1><p>核心思想:  </p>
 <ul>
 <li><strong>确定候选答案</strong>: 首先根据问题中的主题词在知识库中确定候选答案。</li>
@@ -308,7 +309,7 @@
 
  
 
-<script async src="/js/app.js?v=1670170563323"></script>
+<script async src="/js/app.js?v=1672679613978"></script>
 
 
 

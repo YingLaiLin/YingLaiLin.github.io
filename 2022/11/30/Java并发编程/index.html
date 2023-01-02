@@ -12,23 +12,23 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="[toc] Java 并发编程ABA 问题happens-before">
+    <meta name="description" content="[TOC] Java 并发编程ABA 问题happens-before">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发编程">
 <meta property="og:url" content="https://yinglailin.github.io/2022/11/30/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="[toc] Java 并发编程ABA 问题happens-before">
+<meta property="og:description" content="[TOC] Java 并发编程ABA 问题happens-before">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-29T22:38:23.000Z">
-<meta property="article:modified_time" content="2022-11-29T17:14:45.898Z">
+<meta property="article:modified_time" content="2022-12-10T18:03:38.495Z">
 <meta property="article:author" content="YingLai Lin">
 <meta property="article:tag" content="并发">
 <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1670170563324">
+    <link rel="stylesheet" href="/css/style.css?v=1672679613981">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1670170563324">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1672679613981">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -53,7 +53,7 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div><span>文章</span>29</div>
+        <div><span>文章</span>33</div>
         <div><span>标签</span>12</div>
         <div><span>分类</span>3</div>
     </div>
@@ -157,7 +157,7 @@
     
 </aside>
     <div class="nexmoe-copyright">
-        &copy; 2022 YingLai Lin
+        &copy; 2023 YingLai Lin
         Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
         & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
         <br><a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://i.dawnlab.me/c0268c1e6cfd0863d6ba35be1575941a.png" width="150px"></a><script data-ad-client="ca-pub-2058306854838448" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -185,7 +185,8 @@
       
 
       <span id="more"></span>
-<p>[toc]</p>
+
+<p>[TOC]</p>
 <h1 id="Java-并发编程"><a href="#Java-并发编程" class="headerlink" title="Java 并发编程"></a>Java 并发编程</h1><h2 id="ABA-问题"><a href="#ABA-问题" class="headerlink" title="ABA 问题"></a>ABA 问题</h2><h2 id="happens-before"><a href="#happens-before" class="headerlink" title="happens-before"></a>happens-before</h2>
   </article>
 
@@ -263,7 +264,7 @@
 
  
 
-<script async src="/js/app.js?v=1670170563325"></script>
+<script async src="/js/app.js?v=1672679613982"></script>
 
 
 

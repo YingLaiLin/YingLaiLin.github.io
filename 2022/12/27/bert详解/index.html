@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>bert详解 - 土鸡莱莱的博客</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="摸鱼">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="[TOC] Bert 详解基本概念预训练模型定义： 首先使用大量无监督语料进行语言模型的预训练（Pre-training），再使用有标注的语料进行微调（Fine-tuning），来完成具体的NLP任务，比如分类、序列标注、句间关系判断、机器阅读理解等。   预训练任务： 在NLP中，利用语言模型去做预训练，能显著提升许多自然语言处理任务的效果，自然语言处理任务主要包括两种：  sentence">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bert详解">
+<meta property="og:url" content="https://yinglailin.github.io/2022/12/27/bert%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="土鸡莱莱的博客">
+<meta property="og:description" content="[TOC] Bert 详解基本概念预训练模型定义： 首先使用大量无监督语料进行语言模型的预训练（Pre-training），再使用有标注的语料进行微调（Fine-tuning），来完成具体的NLP任务，比如分类、序列标注、句间关系判断、机器阅读理解等。   预训练任务： 在NLP中，利用语言模型去做预训练，能显著提升许多自然语言处理任务的效果，自然语言处理任务主要包括两种：  sentence">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/icI49PiaalsM6KuEia9tYvKeNbMwRqNbmZibfQXS6WhDXXxqR5vF9oTwgiaBWiaCC7dVnUxYyxTTQPtBjIyY7YrZyjgw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="article:published_time" content="2022-12-27T00:21:51.000Z">
+<meta property="article:modified_time" content="2022-12-29T15:42:04.403Z">
+<meta property="article:author" content="YingLai Lin">
+<meta property="article:tag" content="摸鱼">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_png/icI49PiaalsM6KuEia9tYvKeNbMwRqNbmZibfQXS6WhDXXxqR5vF9oTwgiaBWiaCC7dVnUxYyxTTQPtBjIyY7YrZyjgw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1672679613975">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1672679613975">
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="YingLai Lin" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="YingLai Lin">
+            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin" alt="YingLai Lin">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>33</div>
+        <div><span>标签</span>12</div>
+        <div><span>分类</span>3</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://jq.qq.com/?_wv=1027&k=5CfKHun" target="_blank" mdui-tooltip="{content: 'QQ群'}" style="color: rgb(249, 174, 8);background-color: rgba(249, 174, 8, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/nexmoe/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/">Java 后端</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/分布式/">分布式</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/">搜索</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 YingLai Lin
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br><a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://i.dawnlab.me/c0268c1e6cfd0863d6ba35be1575941a.png" width="150px"></a><script data-ad-client="ca-pub-2058306854838448" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="bert详解" class="lazyload">
+              <h1>bert详解</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2022年12月27日</a>
+    <a><i class="nexmoefont icon-areachart"></i>462 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
+</div>
+
+      
+
+      <span id="more"></span>
+
+<p>[TOC]</p>
+<h1 id="Bert-详解"><a href="#Bert-详解" class="headerlink" title="Bert 详解"></a>Bert 详解</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="预训练模型"><a href="#预训练模型" class="headerlink" title="预训练模型"></a>预训练模型</h3><p><strong>定义</strong>：</p>
+<p>首先使用大量<strong>无监督语料</strong>进行语言模型的<strong>预训练</strong>（Pre-training），再使用有标注的语料进行<strong>微调</strong>（Fine-tuning），来完成具体的NLP任务，比如分类、序列标注、句间关系判断、机器阅读理解等。</p>
+<img src="https://mmbiz.qpic.cn/mmbiz_png/icI49PiaalsM6KuEia9tYvKeNbMwRqNbmZibfQXS6WhDXXxqR5vF9oTwgiaBWiaCC7dVnUxYyxTTQPtBjIyY7YrZyjgw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" title alt="图片" width="601">
+
+<p><strong>预训练任务</strong>：</p>
+<p>在NLP中，利用语言模型去做预训练，能显著提升许多自然语言处理任务的效果，自然语言处理任务主要包括两种：</p>
+<ul>
+<li><p><strong>sentence-level tasks（句子级别）</strong>：指学习多个句子之间的关系，例如 natural language inference（自然语言推理）。</p>
+</li>
+<li><p><strong>token-level tasks（词级别）</strong>：指模型要生成 细粒度（fine-grained）的输出，fine-grained指的是类内细分，与之相对于的是 粗粒度（coarse-grained）。</p>
+<ul>
+<li>例如在分类任务中，coarse-grained 只需要分辨是猫还是狗，而fine-grained则需要细分到具体品种。</li>
+</ul>
+</li>
+</ul>
+<p><strong>应用方式</strong>：</p>
+<p>语言模型（Language Model）来辅助NLP任务已经得到了学术界较为广泛的探讨，通常有两种方式：</p>
+<ul>
+<li><p><strong>基于特征的（Feature-based）</strong></p>
+<ul>
+<li><p>将预训练得到的模型作为额外的 feature，作为下游模型的输入，并且该特征不再更新，也即预训练模型的<strong>参数固定</strong>。</p>
+</li>
+<li><p>代表模型：ELMo</p>
+</li>
+</ul>
+</li>
+<li><p><strong>基于微调的（Fine-tuning）</strong></p>
+<ul>
+<li><p>在预训练模型的基础上，添加少量 task-specific parameter， 并在新的训练预料上进行微调。其模型参数<strong>不是固定</strong>的。</p>
+</li>
+<li><p>预训练模型学习的是通用的语义信息，可以微调后用于下游任务</p>
+<ul>
+<li>分类：<ul>
+<li><p>简单模型：增加 FC 、 softmax 层 </p>
+</li>
+<li><p>复杂模型： textCNN、DPCNN</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>代表模型： GPT</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="单向编码与双向编码"><a href="#单向编码与双向编码" class="headerlink" title="单向编码与双向编码"></a>单向编码与双向编码</h3><h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><h2 id="训练方式"><a href="#训练方式" class="headerlink" title="训练方式"></a>训练方式</h2><h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/Pa69sOWy4fCsyEntwg_F-g">WGS - 保姆级讲解BERT</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>YingLai Lin<br>
+        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2022/12/27/bert%E8%AF%A6%E8%A7%A3/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;12&#x2F;27&#x2F;bert%E8%AF%A6%E8%A7%A3&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2022&#x2F;12&#x2F;27&#x2F;bert%E8%AF%A6%E8%A7%A3&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1672679613976"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":500},"mobile":{"show":true},"log":false});</script></body>
+
+</html>
