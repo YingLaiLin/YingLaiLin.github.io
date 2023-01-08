@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>大模型洞察 - 土鸡莱莱的博客</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="摸鱼">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="[TOC] 大模型洞察基本概念定义模型分类混合模型和单体模型 应用领域 目前，大模型的热门方向包括NLP(中文语言)大模型、CV(视觉)大模型、多模态大模型和科学计算大模型等。 应用价值传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地较大的比">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型洞察">
+<meta property="og:url" content="https://yinglailin.github.io/2023/01/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%B4%9E%E5%AF%9F/index.html">
+<meta property="og:site_name" content="土鸡莱莱的博客">
+<meta property="og:description" content="[TOC] 大模型洞察基本概念定义模型分类混合模型和单体模型 应用领域 目前，大模型的热门方向包括NLP(中文语言)大模型、CV(视觉)大模型、多模态大模型和科学计算大模型等。 应用价值传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地较大的比">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-92f4995fac2c3b2886ba63d85e2489dc_1440w.webp">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-40a01161375a6a7e53f48cf0163ef291_1440w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-089a1a0c94569eb7b6f2013bdfda6386_1440w.webp">
+<meta property="article:published_time" content="2023-01-08T20:19:59.000Z">
+<meta property="article:modified_time" content="2023-01-08T16:59:40.224Z">
+<meta property="article:author" content="YingLai Lin">
+<meta property="article:tag" content="摸鱼">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic1.zhimg.com/80/v2-92f4995fac2c3b2886ba63d85e2489dc_1440w.webp">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1673197191605">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1673197191605">
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="YingLai Lin" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="YingLai Lin">
+            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin" alt="YingLai Lin">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>34</div>
+        <div><span>标签</span>12</div>
+        <div><span>分类</span>3</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://jq.qq.com/?_wv=1027&k=5CfKHun" target="_blank" mdui-tooltip="{content: 'QQ群'}" style="color: rgb(249, 174, 8);background-color: rgba(249, 174, 8, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/nexmoe/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/">Java 后端</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/分布式/">分布式</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/">搜索</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 YingLai Lin
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br><a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://i.dawnlab.me/c0268c1e6cfd0863d6ba35be1575941a.png" width="150px"></a><script data-ad-client="ca-pub-2058306854838448" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="大模型洞察" class="lazyload">
+              <h1>大模型洞察</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年01月08日</a>
+    <a><i class="nexmoefont icon-areachart"></i>3.2k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 13 分钟</a>
+</div>
+
+      
+
+      <span id="more"></span>
+
+<p>[TOC]</p>
+<h1 id="大模型洞察"><a href="#大模型洞察" class="headerlink" title="大模型洞察"></a>大模型洞察</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><strong>混合模型和单体模型</strong></p>
+<p><strong>应用领域</strong></p>
+<p>目前，大模型的热门方向包括<strong>NLP</strong>(中文语言)大模型、<strong>CV</strong>(视觉)大模型、<strong>多模态</strong>大模型和<strong>科学计算</strong>大模型等。</p>
+<h3 id="应用价值"><a href="#应用价值" class="headerlink" title="应用价值"></a>应用价值</h3><p>传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地<strong>较大的比重</strong>。并且，在不同的任务上，其存在不可迁移性，即在新场景应用时，其工作流程需要重新进行，无法解决之前的成本投入。</p>
+<p>大模型的出现，意味着<strong>工业化开发模式</strong>的到来。大模型拥有高泛化能力和高通用性，它能将AI 开发流程重新整合建立起一套通用的“<strong>预训练大模型 + 下游任务微调”流水线</strong>。面对不同的应用场景，开发者只需要基于少量行业数据对大模型进行微调，就可以快速开发出具备一定精度的模型，甚至可以直接上线。这样，就可以显著地减少数据手机和数据标准等传统流程的成本。</p>
+<p>也就是说，大模型的应用价值在于<strong>通用的知识模型</strong>，使得其具备应用到多种下游任务的能力，而无需大量的标注数据进行重新训练，在极大地降低了成本的同时，甚至能够提高模型的精度。此外。由于模型的通用性，还能将多个场景的模型融合，减少模型的维护成本。</p>
+<h4 id="商业模式"><a href="#商业模式" class="headerlink" title="商业模式"></a>商业模式</h4><ul>
+<li><p><strong>模型底座</strong></p>
+<ul>
+<li><p>2B - 大模型即知识</p>
+<ul>
+<li><p>则可以基于企业的特定场景任务，提供一整套解决方案（目前大部分开源项目的营利方式，<strong>个人开源 + 商用支持</strong>， 一套系统，两套授权）。</p>
+<ul>
+<li><strong>系统本身+开发团队的经验就成了商业价值</strong></li>
+</ul>
+</li>
+<li><p>按流量或者时间收费，用于（2C 的话，高精度的模型性价比不足）</p>
+</li>
+</ul>
+</li>
+<li><p>2C （性价比不足）</p>
+<ul>
+<li>可以提供蒸馏模型，构建社区，利用广告变现（huggingface）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>构建社区</p>
+</li>
+</ul>
+<h3 id="发展现状"><a href="#发展现状" class="headerlink" title="发展现状"></a>发展现状</h3><h4 id="大模型训练框架"><a href="#大模型训练框架" class="headerlink" title="大模型训练框架"></a>大模型训练框架</h4><p>目前部分深度学习框架，例如Pytorch和Tensorflow，没有办法满足超大规模模型训练的需求，于是微软基于Pytroch开发了DeepSpeed，腾讯基于Pytroch开发了派大星PatricStar，达摩院同基于Tensoflow开发的分布式框架Whale。像是华为昇腾的MindSpore、百度的PaddlePaddle，还有国内的一流科技OneFlow等厂商，对超大模型训练进行了深度的跟进与探索，基于原生的AI框架支持超大模型训练[2]。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-92f4995fac2c3b2886ba63d85e2489dc_1440w.webp"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-40a01161375a6a7e53f48cf0163ef291_1440w.webp"></p>
+<h4 id="主要头部厂商"><a href="#主要头部厂商" class="headerlink" title="主要头部厂商"></a>主要头部厂商</h4><p>大模型首先是需要规模更大的海量数据，同时需要庞大的算力去支撑。但是整体来说，<strong>这是一个系统工程，从并行训练到大规模并行训练，其中就包括对AI集群调度和管理，对集群通讯带宽的研究，对算法在模型的并行、数据的并行等策略上与通讯极限融合在一起考虑，求解在有限带宽前提下，数据通讯和计算之间的最优值。</strong></p>
+<p>目前在大模型这个系统工程里面，最主要的竞争对手有基于英伟达的GPU+微软的DeepSpeed，Google的TPU+Tensorflow，华为昇腾Atlas800+MindSpore三大厂商能够实现全面的优化。至于其他厂商，大部分都是基于英伟达的GPU基础上进行一些创新和优化[2]。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-089a1a0c94569eb7b6f2013bdfda6386_1440w.webp"></p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>类似于GPT-3这样的大模型，在零样本和小样本的学习能力，主要来源于</p>
+<ul>
+<li><p>预训练阶段对海量语料的<strong>大量记忆</strong></p>
+</li>
+<li><p>其次是<strong>语义编码</strong>能力、<strong>远距离依赖关系建模</strong>能力和<strong>文本生成能力</strong>的强化以及自然语言进行任务描述等设计</p>
+</li>
+</ul>
+<p>在<strong>训练目标方面，并没有显式的引导模型去学习小样本泛化能力</strong>，因此在一些小众的语料、逻辑理解、数学求解等语言任务上出现翻车的现象也是能理解的[2]。</p>
+<h2 id="Future-work"><a href="#Future-work" class="headerlink" title="Future work"></a>Future work</h2><p>大模型未来的工作主要集中在<strong>提升模型可容纳的知识</strong>，<strong>降低训练与部署成本上</strong>。</p>
+<h3 id="更大的模型"><a href="#更大的模型" class="headerlink" title="更大的模型"></a>更大的模型</h3><p>从百万、千万、亿再到千亿，万亿，大模型随着参数规模的增加，性能也如研究者预期一样，一直在不断接近人类水平。可以预见，未来一段时间，<strong>大模型的规模依旧有待提升</strong>。可能出现的变化是，人们不再仅仅增加算力，而更多是通过<strong>并行计算、软硬件协同</strong>等技术的支撑。</p>
+<h3 id="更通用的模型"><a href="#更通用的模型" class="headerlink" title="更通用的模型"></a>更通用的模型</h3><p>大模型的初心，是令训练出来的模型<strong>具备不同领域的认知力，既能有泛化的能力，又能有自我进化的能力</strong>。近期兴起的多模态预训练大模型就是最好的证明。大模型的未来需要创新，大模型将致力于构建<strong>通用的人工智能算法底层架构</strong>，将模型的<strong>认知力从单领域泛化到多领域融合</strong>，在不同场景中自我生长，向可持续、可进化的方向发展。</p>
+<h3 id="更易用的开源平台"><a href="#更易用的开源平台" class="headerlink" title="更易用的开源平台"></a>更易用的开源平台</h3><p><strong>预训练大模型 + 微调</strong>的方式的确加速了 AI 开发者的步伐，但如果把与之相适应的工作流程给搭建起来，大模型将会在更多场景大放光彩。另外，大模型的评估未来会有标准化成熟的体系来衡量，这个体系也会是行业内公认的标准，规范模型的通用性、易用性，同时用这个标准来衡量大模型的优劣而不是如今自卖自夸式的标榜。</p>
+<h3 id="标准易用的工作流程"><a href="#标准易用的工作流程" class="headerlink" title="标准易用的工作流程"></a>标准易用的工作流程</h3><p>未来，将大模型的一些运算存储等能力像芯片一样<strong>固化在一些端侧硬件设备</strong>中，在使用的过程中不用在重装的模型中耗时调用算力与数据，可以实现随时调用随时使用。而不像现下的模型多是重装大模型，使用则需要调用庞大的算力和运行时间。</p>
+<h3 id="端侧应用"><a href="#端侧应用" class="headerlink" title="端侧应用"></a>端侧应用</h3><h3 id="存在的挑战"><a href="#存在的挑战" class="headerlink" title="存在的挑战"></a>存在的挑战</h3><h4 id="价值落地"><a href="#价值落地" class="headerlink" title="价值落地"></a>价值落地</h4><p>AI 大模型最大挑战在于，<strong>如何让更多行业和场景真正付诸落地</strong>。目前看应用仍处于企业内部项目为主。改变这种闭门造车的局面，解决不同应用场景的快速适配是目前的一个难点。</p>
+<h4 id="训练成本"><a href="#训练成本" class="headerlink" title="训练成本"></a>训练成本</h4><p>打造大模型并非易事，需要消耗庞大的数据、算力、算法等各种软硬件资源。而短期看，这种巨大的资源消耗，不仅对于企业和科研机构来说，无疑是一项沉重的负担，更与全球节能环保以及我国提出的双碳(碳达峰、碳中和)目标，是有所矛盾的。<strong>如何在有限资源的条件下实现大模型的低能耗进化，是一个不小的挑战</strong>。</p>
+<h4 id="推理成本"><a href="#推理成本" class="headerlink" title="推理成本"></a>推理成本</h4><p>大模型时延问题</p>
+<h4 id="模型创新"><a href="#模型创新" class="headerlink" title="模型创新"></a>模型创新</h4><p>大模型应用价值取决于其泛化能力，而不是参数规模越大越好。<strong>大模型是否优秀，不仅依赖数据的精度与网络结构，也是对其与行业结合软硬件协同能力的比拼</strong>。目前业界过度强调高参数集、强算力模型的研发，而忽视了如下问题：</p>
+<ul>
+<li><p>网络模型的创新</p>
+</li>
+<li><p>与行业的协同创新</p>
+</li>
+</ul>
+<h3 id="发展方向"><a href="#发展方向" class="headerlink" title="发展方向"></a>发展方向</h3><h2 id="对从业者的影响（NLP）"><a href="#对从业者的影响（NLP）" class="headerlink" title="对从业者的影响（NLP）"></a>对从业者的影响（NLP）</h2><p><strong>宏观角度</strong></p>
+<p>ChatGPT 强大的背后可归因于GPT 3.5的强大，体现了<strong>模型规模</strong>的模型，而这意味着很多目前独立存在的NLP研究领域，将被纳入LLM的技术体系，进而不再独立存在，逐步消失[3]。</p>
+<p>目前研究表明，很多NLP任务，随着LLM模型规模增长，效果会大幅提升。或许我们可以得到如下推论：<strong>大多数某领域所谓“独有”的问题，大概率只是缺乏领域知识导致的一种外在表象</strong>，只要领域知识足够多，这个所谓领域独有的问题，就可以被很好地解决掉，其实并不需要专门针对某个具体领域问题，冥思苦想去提出专用解决方案。也许事实的真相超乎意料地简单：<strong>你只要把这个领域更多的数据交给LLM，让它自己学习更多知识即可</strong>。</p>
+<p>在这个背景下，未来的技术发展趋势应该是：<strong>追求规模越来越大的LLM模型，通过增加预训练数据的多样性，来涵盖越来越多的领域</strong>，LLM自主从领域数据中通过预训练过程学习领域知识，随着模型规模不断增大，很多问题随之得到解决。</p>
+<p>那么，如何判断某个具体领域是否该立即停止独立研究，其判断标准可采取以下两种方法之一：</p>
+<ol>
+<li><p>当前的任务中，<strong>LLM的研究效果超过人类表现</strong>，对于那些LLM效果超过人类的研究领域，已无独立研究的必要。举个例子，GLUE与SuperGLUE测试集合里的很多任务，目前LLM效果已超过人类表现，与这个<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E6%95%B0%E6%8D%AE%E9%9B%86%E5%90%88&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:2832979762%7D">数据集合</a>密切相关的研究领域，其实就没有继续独立存在的必要。</p>
+</li>
+<li><p>对比两种模式的任务效果，第一种模式是用较大的领域专用数据进行<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=Fine-tuning&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:2832979762%7D">Fine-tuning</a>，第二种是<strong>few-shot prompting或 instruct-based方法</strong>。如果第二种方法效果达到或超过第一种方法，则意味着这个领域没有继续独立存在的必要性。</p>
+</li>
+</ol>
+<p>也就是说，对于 NLP 的研究者来说（特别是垂直领域），LLM 可能将会导致大量 NLP 子领域的小时，转而研究 LLM 场景下的相关问题。</p>
+<p><strong>微观角度</strong></p>
+<p>算法工程师平时的工作很大一部分是处理数据的 badcase 和模型的 finetune 经验。当大模型技术成熟后，技术趋同，再配合<strong>大模型的通用能力与低廉的落地成本</strong>，那么还需要工程师处理的 badcase 还剩多少？<strong>当无需老人的 nlp 经验时</strong>，新人只需要卷超大模型中的特定问题，而老人在这方面没有经验，那么老人总将被年轻人所淘汰。</p>
+<p>所以在大模型还不具备上线能力，也即低廉的落地成本时，短期还会依赖大量场景数据的 finetune 和结构调优，这时对老人的影响还是有限的。</p>
+<p>对于新进的 NLP 工程师来说，ChatGPT 以及后来的模型，只是一个工具，但这意味着你要快速地 follow 前沿的研究和设计。</p>
+<h3 id="大模型与小模型-4"><a href="#大模型与小模型-4" class="headerlink" title="大模型与小模型[4]"></a>大模型与小模型[4]</h3><p><strong>大模型与小模型协同发展</strong></p>
+<p>大模型与小模型之间更多的是协同发展，<strong>分别承担慢思考和快思考的任务</strong>。云上能容纳海量知识的大模型，就像超级大脑，有能力进行慢思考，而在端上与大模型协同的小模型可以执行快思考：</p>
+<ul>
+<li><p>大模型可以向边、端小模型的输出，让<strong>小模型更容易获取通用的知识与能力</strong></p>
+</li>
+<li><p>小模型专注在特定场景做<strong>极致优化</strong>，提升了性能与效率；</p>
+</li>
+<li><p>小模型向大模型反馈执行成效，解决了过去大模型数据集过于单一的问题</p>
+</li>
+<li><p>最后全社会不需要重复训练相似的大模型，模型可以被共享，算力与能源的使用效率得以最大化。</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>AI 属于锦上添花，其是依附于具体业务存在的。</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a href="%5B2022%EF%BC%8C%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%BF%98%E8%83%BD%E8%B5%B0%E5%A4%9A%E8%BF%9C-51CTO.COM%5D(https://www.51cto.com/article/697186.html)">2022，大模型还能走多远-51CTO</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/432813821">大模型的发展与解决的问题 - ZOMI酱的文章 - 知乎</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/575391861/answer/2832979762">ChatGPT的诞生意味着模型大一统的可行性，这会对未来5年的NLP算法从业者带来怎样的冲击？ - 张俊林的回答 - 知乎</a></p>
+<p>[4] <a href="(https://www.jiqizhixin.com/articles/2021-12-29-4)">站在2022前展望大模型的未来，周志华、唐杰、杨红霞这些大咖怎么看？ | 机器之心</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>YingLai Lin<br>
+        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2023/01/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%B4%9E%E5%AF%9F/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2023&#x2F;01&#x2F;09&#x2F;%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%B4%9E%E5%AF%9F&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2023&#x2F;01&#x2F;09&#x2F;%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%B4%9E%E5%AF%9F&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1673197191606"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":500},"mobile":{"show":true},"log":false});</script></body>
+
+</html>
