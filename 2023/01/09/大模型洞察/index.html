@@ -12,27 +12,27 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="[TOC] 大模型洞察基本概念定义模型分类混合模型和单体模型 应用领域 目前，大模型的热门方向包括NLP(中文语言)大模型、CV(视觉)大模型、多模态大模型和科学计算大模型等。 应用价值传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地较大的比">
+    <meta name="description" content="[TOC] 大模型洞察基本概念定义模型分类混合模型和单体模型 应用领域 目前，大模型的热门方向包括NLP(中文语言)大模型、CV(视觉)大模型、多模态大模型和科学计算大模型等。应用价值传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地较大的比重">
 <meta property="og:type" content="article">
 <meta property="og:title" content="大模型洞察">
 <meta property="og:url" content="https://yinglailin.github.io/2023/01/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%B4%9E%E5%AF%9F/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="[TOC] 大模型洞察基本概念定义模型分类混合模型和单体模型 应用领域 目前，大模型的热门方向包括NLP(中文语言)大模型、CV(视觉)大模型、多模态大模型和科学计算大模型等。 应用价值传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地较大的比">
+<meta property="og:description" content="[TOC] 大模型洞察基本概念定义模型分类混合模型和单体模型 应用领域 目前，大模型的热门方向包括NLP(中文语言)大模型、CV(视觉)大模型、多模态大模型和科学计算大模型等。应用价值传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地较大的比重">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pic1.zhimg.com/80/v2-92f4995fac2c3b2886ba63d85e2489dc_1440w.webp">
 <meta property="og:image" content="https://pic2.zhimg.com/80/v2-40a01161375a6a7e53f48cf0163ef291_1440w.webp">
 <meta property="og:image" content="https://pic3.zhimg.com/80/v2-089a1a0c94569eb7b6f2013bdfda6386_1440w.webp">
 <meta property="article:published_time" content="2023-01-08T20:19:59.000Z">
-<meta property="article:modified_time" content="2023-01-08T16:59:40.224Z">
+<meta property="article:modified_time" content="2023-01-16T17:22:07.912Z">
 <meta property="article:author" content="YingLai Lin">
-<meta property="article:tag" content="摸鱼">
+<meta property="article:tag" content="大模型">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://pic1.zhimg.com/80/v2-92f4995fac2c3b2886ba63d85e2489dc_1440w.webp">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1673197191605">
+    <link rel="stylesheet" href="/css/style.css?v=1674530605007">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1673197191605">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1674530605007">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -57,8 +57,8 @@
         </a>
     </div>
     <div class="nexmoe-count">
-        <div><span>文章</span>34</div>
-        <div><span>标签</span>12</div>
+        <div><span>文章</span>38</div>
+        <div><span>标签</span>13</div>
         <div><span>分类</span>3</div>
     </div>
     <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
@@ -153,7 +153,7 @@
     
   <div class="nexmoe-widget-wrap">
     <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
+      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" style="font-size: 13.33px;">大模型</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
     </div>
     
   </div>
@@ -182,7 +182,7 @@
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2023年01月08日</a>
-    <a><i class="nexmoefont icon-areachart"></i>3.2k 字</a>
+    <a><i class="nexmoefont icon-areachart"></i>3.3k 字</a>
     <a><i class="nexmoefont icon-time-circle-fill"></i>大概 13 分钟</a>
 </div>
 
@@ -193,8 +193,7 @@
 <p>[TOC]</p>
 <h1 id="大模型洞察"><a href="#大模型洞察" class="headerlink" title="大模型洞察"></a>大模型洞察</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><strong>混合模型和单体模型</strong></p>
 <p><strong>应用领域</strong></p>
-<p>目前，大模型的热门方向包括<strong>NLP</strong>(中文语言)大模型、<strong>CV</strong>(视觉)大模型、<strong>多模态</strong>大模型和<strong>科学计算</strong>大模型等。</p>
-<h3 id="应用价值"><a href="#应用价值" class="headerlink" title="应用价值"></a>应用价值</h3><p>传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地<strong>较大的比重</strong>。并且，在不同的任务上，其存在不可迁移性，即在新场景应用时，其工作流程需要重新进行，无法解决之前的成本投入。</p>
+<h6 id="目前，大模型的热门方向包括NLP-中文语言-大模型、CV-视觉-大模型、多模态大模型和科学计算大模型等。"><a href="#目前，大模型的热门方向包括NLP-中文语言-大模型、CV-视觉-大模型、多模态大模型和科学计算大模型等。" class="headerlink" title="目前，大模型的热门方向包括NLP(中文语言)大模型、CV(视觉)大模型、多模态大模型和科学计算大模型等。"></a>目前，大模型的热门方向包括<strong>NLP</strong>(中文语言)大模型、<strong>CV</strong>(视觉)大模型、<strong>多模态</strong>大模型和<strong>科学计算</strong>大模型等。</h6><h3 id="应用价值"><a href="#应用价值" class="headerlink" title="应用价值"></a>应用价值</h3><p>传统 AI 的开发模式涉及标注数据收集、数据标注和模型训练等工作，一般来说，模型的训练需要大量的数据进行训练，而数据越多，标注结果越精度，模型的效果越好。也就是说，数据收集和模型标注的工作占据了模型落地<strong>较大的比重</strong>。并且，在不同的任务上，其存在不可迁移性，即在新场景应用时，其工作流程需要重新进行，无法解决之前的成本投入。</p>
 <p>大模型的出现，意味着<strong>工业化开发模式</strong>的到来。大模型拥有高泛化能力和高通用性，它能将AI 开发流程重新整合建立起一套通用的“<strong>预训练大模型 + 下游任务微调”流水线</strong>。面对不同的应用场景，开发者只需要基于少量行业数据对大模型进行微调，就可以快速开发出具备一定精度的模型，甚至可以直接上线。这样，就可以显著地减少数据手机和数据标准等传统流程的成本。</p>
 <p>也就是说，大模型的应用价值在于<strong>通用的知识模型</strong>，使得其具备应用到多种下游任务的能力，而无需大量的标注数据进行重新训练，在极大地降低了成本的同时，甚至能够提高模型的精度。此外。由于模型的通用性，还能将多个场景的模型融合，减少模型的维护成本。</p>
 <h4 id="商业模式"><a href="#商业模式" class="headerlink" title="商业模式"></a>商业模式</h4><ul>
@@ -245,9 +244,12 @@
 <h4 id="推理成本"><a href="#推理成本" class="headerlink" title="推理成本"></a>推理成本</h4><p>大模型时延问题</p>
 <h4 id="模型创新"><a href="#模型创新" class="headerlink" title="模型创新"></a>模型创新</h4><p>大模型应用价值取决于其泛化能力，而不是参数规模越大越好。<strong>大模型是否优秀，不仅依赖数据的精度与网络结构，也是对其与行业结合软硬件协同能力的比拼</strong>。目前业界过度强调高参数集、强算力模型的研发，而忽视了如下问题：</p>
 <ul>
-<li><p>网络模型的创新</p>
+<li><p><strong>网络模型的创新</strong></p>
+<ul>
+<li>目前都是基于 Transformer</li>
+</ul>
 </li>
-<li><p>与行业的协同创新</p>
+<li><p><strong>与行业的协同创新</strong></p>
 </li>
 </ul>
 <h3 id="发展方向"><a href="#发展方向" class="headerlink" title="发展方向"></a>发展方向</h3><h2 id="对从业者的影响（NLP）"><a href="#对从业者的影响（NLP）" class="headerlink" title="对从业者的影响（NLP）"></a>对从业者的影响（NLP）</h2><p><strong>宏观角度</strong></p>
@@ -272,6 +274,12 @@
 <li><p>大模型可以向边、端小模型的输出，让<strong>小模型更容易获取通用的知识与能力</strong></p>
 </li>
 <li><p>小模型专注在特定场景做<strong>极致优化</strong>，提升了性能与效率；</p>
+<ul>
+<li><p>特定结构模型</p>
+</li>
+<li><p>蒸馏后的大模型</p>
+</li>
+</ul>
 </li>
 <li><p>小模型向大模型反馈执行成效，解决了过去大模型数据集过于单一的问题</p>
 </li>
@@ -303,6 +311,8 @@
   
   <div class="nexmoe-post-meta nexmoe-rainbow">
     
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="tag">大模型</a>
     
 </div>
 
@@ -358,7 +368,7 @@
 
  
 
-<script async src="/js/app.js?v=1673197191606"></script>
+<script async src="/js/app.js?v=1674530605007"></script>
 
 
 

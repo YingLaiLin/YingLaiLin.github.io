@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>大模型及其思考 - 土鸡莱莱的博客</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="摸鱼">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="[TOC] 大模型及其思考概览定义大模型本质上不应该因为参数大（100M 参数以上，多个任务预训练）或者因为使用 Transformer 并支持预训练就称为大模型。  这是因为 Transformer 本质上只是一个网络结构，其提出时还大模型还并未出现，只是因为其具备良好的通用性和拓展性，而被广泛地在大模型上使用。 大模型更贴切地称呼应该称为 foundation model（基础模型）。 现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型及其思考">
+<meta property="og:url" content="https://yinglailin.github.io/2023/01/11/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%8F%8A%E5%85%B6%E6%80%9D%E8%80%83/index.html">
+<meta property="og:site_name" content="土鸡莱莱的博客">
+<meta property="og:description" content="[TOC] 大模型及其思考概览定义大模型本质上不应该因为参数大（100M 参数以上，多个任务预训练）或者因为使用 Transformer 并支持预训练就称为大模型。  这是因为 Transformer 本质上只是一个网络结构，其提出时还大模型还并未出现，只是因为其具备良好的通用性和拓展性，而被广泛地在大模型上使用。 大模型更贴切地称呼应该称为 foundation model（基础模型）。 现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="file:///Users/leon/Library/Application%20Support/marktext/images/2023-01-16-23-29-50-image.png">
+<meta property="og:image" content="https://picx.zhimg.com/80/v2-4c16995cdc2b9a30aa77fc65812f30cb_1440w.webp?source=1940ef5c">
+<meta property="article:published_time" content="2023-01-11T00:55:21.000Z">
+<meta property="article:modified_time" content="2023-01-17T15:11:30.728Z">
+<meta property="article:author" content="YingLai Lin">
+<meta property="article:tag" content="大模型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="file:///Users/leon/Library/Application%20Support/marktext/images/2023-01-16-23-29-50-image.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1674530605001">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1674530605001">
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="YingLai Lin" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="YingLai Lin">
+            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin" alt="YingLai Lin">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>38</div>
+        <div><span>标签</span>13</div>
+        <div><span>分类</span>3</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://jq.qq.com/?_wv=1027&k=5CfKHun" target="_blank" mdui-tooltip="{content: 'QQ群'}" style="color: rgb(249, 174, 8);background-color: rgba(249, 174, 8, .1);">
+            <i class="nexmoefont icon-QQ"></i>
+        </a><a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/nexmoe/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/">Java 后端</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/分布式/">分布式</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/">搜索</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" style="font-size: 13.33px;">大模型</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 YingLai Lin
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br><a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://i.dawnlab.me/c0268c1e6cfd0863d6ba35be1575941a.png" width="150px"></a><script data-ad-client="ca-pub-2058306854838448" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="大模型及其思考" class="lazyload">
+              <h1>大模型及其思考</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年01月11日</a>
+    <a><i class="nexmoefont icon-areachart"></i>986 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
+</div>
+
+      
+
+      <span id="more"></span>
+
+<p>[TOC]</p>
+<h1 id="大模型及其思考"><a href="#大模型及其思考" class="headerlink" title="大模型及其思考"></a>大模型及其思考</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>大模型本质上不应该因为参数大（100M 参数以上，多个任务预训练）或者因为使用 Transformer 并支持预训练就称为大模型。 </p>
+<p>这是因为 Transformer 本质上只是一个网络结构，其提出时还大模型还并未出现，只是因为其具备良好的通用性和拓展性，而被广泛地在大模型上使用。</p>
+<p><strong>大模型更贴切地称呼应该称为 foundation model（基础模型）</strong>。</p>
+<h3 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h3><h4 id="大模型的优势"><a href="#大模型的优势" class="headerlink" title="大模型的优势"></a>大模型的优势</h4><h5 id="大模型-gt-小模型？"><a href="#大模型-gt-小模型？" class="headerlink" title="大模型 &gt; 小模型？"></a>大模型 &gt; 小模型？</h5><p><strong>数据集大小的影响</strong></p>
+<p>尽管在 ImageNet 这种大规模数据集上，大模型的精度的确越来越高。但是一些实际的数据集的表现也说明，小容量的网络也能触及网络的极限，并且具备<strong>速度、内存、功耗、训练成本等优势</strong>。</p>
+<p><strong>预训练是否必须？ –  finetune 不总是有效</strong></p>
+<p><strong>多任务预训练一定会让模型在后续任务中fine-tuning之后效果更好吗</strong>。在底层视觉的任务里，有些任务是打架的，联合训练会导致一定程度的精度恶化。因为，大模型的预训练可能对于后续的调优可能是无用的。</p>
+<p><strong>大模型蒸馏</strong></p>
+<p>既然小模型具备优势，那么如何通过大模型蒸馏得到更好的小模型，这是一个值得探索的问题。</p>
+<h3 id="存在挑战"><a href="#存在挑战" class="headerlink" title="存在挑战"></a>存在挑战</h3><h4 id="更大的模型能够提升-AI-的感知能力吗？"><a href="#更大的模型能够提升-AI-的感知能力吗？" class="headerlink" title="更大的模型能够提升 AI 的感知能力吗？"></a>更大的模型能够提升 AI 的感知能力吗？</h4><h4 id="显存优化"><a href="#显存优化" class="headerlink" title="显存优化"></a>显存优化</h4><p>模型训练时消耗的显存通常是参数量的几倍，甚至更多。因此，需要对这部分的的显存进行相关优化。</p>
+<h5 id="合理的计算调度"><a href="#合理的计算调度" class="headerlink" title="合理的计算调度"></a>合理的计算调度</h5><h5 id="重计算（或-Gradient-Checkpointing"><a href="#重计算（或-Gradient-Checkpointing" class="headerlink" title="重计算（或 Gradient Checkpointing)"></a>重计算（或 Gradient Checkpointing)</h5><h5 id="CPU-offload"><a href="#CPU-offload" class="headerlink" title="CPU-offload"></a>CPU-offload</h5><h5 id="Optimization-state-优化"><a href="#Optimization-state-优化" class="headerlink" title="Optimization-state 优化"></a>Optimization-state 优化</h5><hr>
+<h4 id="分布式优化"><a href="#分布式优化" class="headerlink" title="分布式优化"></a>分布式优化</h4><h5 id="算子拆分"><a href="#算子拆分" class="headerlink" title="算子拆分"></a>算子拆分</h5><p>基于矩阵分块乘法，将权重矩阵 $W$ 拆分到 2 个 device 上进行分块计算，即</p>
+<p>$Y = WX = [W_1, W_2] X = [W_1 X, W_2 X]$</p>
+<p>即将 $W$ 拆分到 2 个 device，而将 $X$ 复制到 2 个 device 上，然后在 2 个 device 上分别做矩阵乘法即可。</p>
+<img src="file:///Users/leon/Library/Application%20Support/marktext/images/2023-01-16-23-29-50-image.png" title alt width="622">
+
+<p>对于算子拆分来说，其难点在于算子拆分会引入一些额外通信，降低总体吞吐量。所以需要对算子的拆分策略进行分析，以获得最优的切分策略，使得总体通信成本最低。其包含如下步骤：</p>
+<ul>
+<li><p><strong>拆分规则定制</strong></p>
+<ul>
+<li>为每种算子定制完备的推导方案</li>
+</ul>
+</li>
+<li><p><strong>推导传播算法</strong>？？</p>
+<ul>
+<li>推导影响链以及通信的引入（如引入 Reshard）</li>
+</ul>
+</li>
+<li><p><strong>Cost model</strong></p>
+<ul>
+<li>快速评估每种方案的性能</li>
+</ul>
+</li>
+<li><p><strong>高效的搜索算法</strong></p>
+<ul>
+<li>在巨大的搜索空间中快速搜索出较好的方案</li>
+</ul>
+</li>
+</ul>
+<h5 id="流水并行"><a href="#流水并行" class="headerlink" title="流水并行"></a>流水并行</h5><p><strong>定义</strong></p>
+<p>将不同的 Layer切分到不同的Device上。如 G-pipe 将一个 batch 拆分为若干个 micro-batch, 从而减少 bubble time。 如下图所示：</p>
+<p><img src="https://picx.zhimg.com/80/v2-4c16995cdc2b9a30aa77fc65812f30cb_1440w.webp?source=1940ef5c"></p>
+<p>朴素的流水并行方式是当所有的前向传播完成之后，才进行反向传播。而由于不同的 layer 之间存在时序关系，因此当后续的 device 所依赖的前向 device 计算未完成时，其就只能空转，即产生 bubble。</p>
+<p>但是这种方案存在显存压力。如上图(a) 所示，$B_0$ 的计算依赖于 $B_1, F_0$。因此，这时$F_0$ 需要保留其 activations 直到 $B_0$ 计算完成才能丢弃。这样，会导致其拥有较大的显存峰值。</p>
+<h5 id="混合并行"><a href="#混合并行" class="headerlink" title="混合并行"></a>混合并行</h5><h2 id="未来展望"><a href="#未来展望" class="headerlink" title="未来展望"></a>未来展望</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><strong>大多数工业界的场景中，大模型并不能直接发挥价值</strong>。在不同的任务里还是要根据实际场景去谈具体的模型和算法，不能解决方案就提大模型，也不能将其当做主要的技术方案去忽悠人。</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/498271491/answer/2221939093">为什么说大模型训练很难？ - 西门宇少的回答 - 知乎</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>YingLai Lin<br>
+        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2023/01/11/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%8F%8A%E5%85%B6%E6%80%9D%E8%80%83/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2023&#x2F;01&#x2F;11&#x2F;%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%8F%8A%E5%85%B6%E6%80%9D%E8%80%83&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2023&#x2F;01&#x2F;11&#x2F;%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%8F%8A%E5%85%B6%E6%80%9D%E8%80%83&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="tag">大模型</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'nexmoe.github.io',
+        owner: 'nexmoe',
+        admin: 'nexmoe'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1674530605002"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":500},"mobile":{"show":true},"log":false});</script></body>
+
+</html>
