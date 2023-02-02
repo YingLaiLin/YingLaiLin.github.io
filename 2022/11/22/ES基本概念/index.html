@@ -29,10 +29,10 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yinglailin.github.io/2022/11/images/a0680840d36f241ee8dc995dde7c245fe16745974367b8acd39bc578694dc0b2.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1675345169143">
+    <link rel="stylesheet" href="/css/style.css?v=1675349254866">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1675345169143">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1675349254866">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -99,11 +99,9 @@
     
     <div class="nexmoe-widget-wrap">
     <div class="nexmoe-widget nexmoe-social">
-        <a class="mdui-ripple" href="https://jq.qq.com/?_wv=1027&k=5CfKHun" target="_blank" mdui-tooltip="{content: 'QQ群'}" style="color: rgb(249, 174, 8);background-color: rgba(249, 174, 8, .1);">
-            <i class="nexmoefont icon-QQ"></i>
-        </a><a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+        <a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
             <i class="nexmoefont icon-bilibili"></i>
-        </a><a class="mdui-ripple" href="https://github.com/nexmoe/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+        </a><a class="mdui-ripple" href="https://github.com/YingLaiLin" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
             <i class="nexmoefont icon-github"></i>
         </a>
     </div>
@@ -414,9 +412,9 @@
         clientID: '80b2453b6d5f37ad6225',
         clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
         id: window.location.pathname,
-        repo: 'nexmoe.github.io',
-        owner: 'nexmoe',
-        admin: 'nexmoe'
+        repo: 'https://yinglailin.github.io/',
+        owner: 'yinglai',
+        admin: 'yinglai'
     })
     gitalk.render('gitalk')
 </script>
@@ -428,6 +426,18 @@
               <div class="nexmoe-fixed">
                   <div class="nexmoe-tool"> 
                     
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ES-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">ES 基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ES-%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B-1"><span class="toc-number">1.1.</span> <span class="toc-text">ES 节点类型[1]</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#master-%E4%B8%BB%E8%8A%82%E7%82%B9-2-4"><span class="toc-number">1.1.1.</span> <span class="toc-text">master - 主节点[2,4]</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Dedicated-master-eligible-node-%E4%B8%93%E7%94%A8%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">Dedicated master-eligible node 专用主节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Voting-only-master-eligible-node-%E4%BB%85%E6%8A%95%E7%A5%A8%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">Voting-only master-eligible node 仅投票主节点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#data-%E6%95%B0%E6%8D%AE%E8%8A%82%E7%82%B9"><span class="toc-number">1.1.2.</span> <span class="toc-text">data - 数据节点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Content-data-node"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">Content data node</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%83%AD%E7%82%B9%E6%95%B0%E6%8D%AE%E8%8A%82%E7%82%B9%EF%BC%88Hot-data-node"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">热点数据节点（Hot data node)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%AD%E6%B8%A9%E6%95%B0%E6%8D%AE%E8%8A%82%E7%82%B9%EF%BC%88Warm-data-node%EF%BC%89"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">中温数据节点（Warm data node）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%B7%E6%95%B0%E6%8D%AE%E8%8A%82%E7%82%B9%EF%BC%88Cold-data-node%EF%BC%89"><span class="toc-number">1.1.2.4.</span> <span class="toc-text">冷数据节点（Cold data node）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%81%E5%AD%98%E6%95%B0%E6%8D%AE%E8%8A%82%E7%82%B9%EF%BC%88Frozen-data-node"><span class="toc-number">1.1.2.5.</span> <span class="toc-text">封存数据节点（Frozen data node)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E8%B0%83%E8%8A%82%E7%82%B9-Coordinating-only-node-%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%8A%82%E7%82%B9"><span class="toc-number">1.1.3.</span> <span class="toc-text">协调节点(Coordinating only node, 客户端节点)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E5%80%99%E9%80%89%E8%8A%82%E7%82%B9%EF%BC%88Remote-eligible-node"><span class="toc-number">1.1.4.</span> <span class="toc-text">远程候选节点（Remote-eligible node</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-number">1.1.5.</span> <span class="toc-text">修改集群节点的角色</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mapping"><span class="toc-number">1.2.</span> <span class="toc-text">Mapping</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.1.</span> <span class="toc-text">重要参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E6%AE%B5%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">字段类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">字符串类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">数值类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">日期类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">复合类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Join-%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.2.5.</span> <span class="toc-text">Join 类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dynamic-Mapping"><span class="toc-number">1.2.3.</span> <span class="toc-text">Dynamic Mapping</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%A7%88"><span class="toc-number">1.3.</span> <span class="toc-text">概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%90%86%E8%A7%A3-segment"><span class="toc-number">1.4.</span> <span class="toc-text">理解 segment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">1.5.</span> <span class="toc-text">参考资料</span></a></li></ol></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
                       
                     
                       <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
@@ -455,7 +465,7 @@
 
  
 
-<script async src="/js/app.js?v=1675345169143"></script>
+<script async src="/js/app.js?v=1675349254876"></script>
 
 
 
