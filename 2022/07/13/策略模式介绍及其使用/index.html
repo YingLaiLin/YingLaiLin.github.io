@@ -12,29 +12,21 @@
     
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="算子级并行基本原理 MindSpore对每个算子独立建模，用户可以设置正向网络中每个算子的切分策略（对于未设置的算子，默认按数据并行进行切分）。  具体地， 在构图阶段，框架将遍历正向图，根据算子的切分策略对每个算子及其输入张量进行切分建模，使得该算子的计算逻辑在切分前后保持数学等价。   Tensor Layout mindspore使用 Tensor Layout 来表达输入输出张量在集群">
-<meta property="og:type" content="article">
+    <meta property="og:type" content="article">
 <meta property="og:title" content="策略模式介绍及其使用">
 <meta property="og:url" content="https://yinglailin.github.io/2022/07/13/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="土鸡莱莱的博客">
-<meta property="og:description" content="算子级并行基本原理 MindSpore对每个算子独立建模，用户可以设置正向网络中每个算子的切分策略（对于未设置的算子，默认按数据并行进行切分）。  具体地， 在构图阶段，框架将遍历正向图，根据算子的切分策略对每个算子及其输入张量进行切分建模，使得该算子的计算逻辑在切分前后保持数学等价。   Tensor Layout mindspore使用 Tensor Layout 来表达输入输出张量在集群">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_0_zh.png">
-<meta property="og:image" content="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_1_zh.png">
-<meta property="og:image" content="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_2_zh.png">
-<meta property="og:image" content="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_3_zh.png">
-<meta property="og:image" content="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_4_zh.png">
 <meta property="article:published_time" content="2022-07-13T00:04:14.000Z">
-<meta property="article:modified_time" content="2023-02-02T13:30:26.524Z">
+<meta property="article:modified_time" content="2023-02-06T16:06:41.460Z">
 <meta property="article:author" content="YingLai Lin">
-<meta property="article:tag" content="分布式训练, 机器学习, mindSpore">
+<meta property="article:tag" content="摸鱼">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_0_zh.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
-    <link rel="stylesheet" href="/css/style.css?v=1675349254904">
+    <link rel="stylesheet" href="/css/style.css?v=1675699611752">
      
     
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1675349254904">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1675699611752">
     
 <meta name="generator" content="Hexo 5.4.0"></head>
 
@@ -60,7 +52,7 @@
     </div>
     <div class="nexmoe-count">
         <div><span>文章</span>40</div>
-        <div><span>标签</span>14</div>
+        <div><span>标签</span>13</div>
         <div><span>分类</span>3</div>
     </div>
     <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
@@ -153,7 +145,7 @@
     
   <div class="nexmoe-widget-wrap">
     <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-mindSpore/" style="font-size: 10px;">分布式训练, 机器学习, mindSpore</a> <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" style="font-size: 13.33px;">大模型</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
+      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" style="font-size: 13.33px;">大模型</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
     </div>
     
   </div>
@@ -182,107 +174,13 @@
       
       <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
     <a><i class="nexmoefont icon-calendar-fill"></i>2022年07月13日</a>
-    <a><i class="nexmoefont icon-areachart"></i>961 字</a>
-    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 4 分钟</a>
+    <a><i class="nexmoefont icon-areachart"></i>0 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 1 分钟</a>
 </div>
 
       
 
       <span id="more"></span>
-
-<h1 id="算子级并行"><a href="#算子级并行" class="headerlink" title="算子级并行"></a>算子级并行</h1><h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><ul>
-<li><p>MindSpore对每个算子独立建模，用户可以设置正向网络中<strong>每个算子的切分策略</strong>（对于未设置的算子，<strong>默认按数据并行进行切分</strong>）。</p>
-</li>
-<li><p>具体地， 在构图阶段，框架将遍历正向图，根据算子的切分策略对每个算子及其输入张量进行切分建模，使得该算子的计算逻辑在<strong>切分前后保持数学等价</strong>。</p>
-</li>
-</ul>
-<h3 id="Tensor-Layout"><a href="#Tensor-Layout" class="headerlink" title="Tensor Layout"></a>Tensor Layout</h3><ul>
-<li><p>mindspore使用 <strong>Tensor Layout</strong> 来表达输入输出<strong>张量在集群中的分布状态</strong>，其包含了<strong>张量和设备间的映射关系</strong>。用户无需感知模型各切片在集群中如何分布，框架将自动调度分配。</p>
-</li>
-<li><p>Tensor可以按某些维度切分到集群，也可以在集群上复制。</p>
-<ul>
-<li>如下图所示，将一个二维矩阵切分到两个节点，有三种切分方式：<strong>行切分、列切分及复制</strong>（每种切分方式即对应于一种Tensor Layout）</li>
-</ul>
-<p><img data-fancybox="gallery" data-sizes="auto" data-src="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_0_zh.png" alt="image" class="lazyload"></p>
-<ul>
-<li>如果将二维矩阵切分到4个节点，则有四种切分方式，<strong>行列同时切分、复制、行切分+复制、列切分+复制</strong>，如下图所示：<img data-fancybox="gallery" data-sizes="auto" data-src="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_1_zh.png" alt="image" class="lazyload"></li>
-</ul>
-</li>
-<li><p>Tensor Redistribution 用于处理<strong>不同 Tensor Layout之间的转换</strong>，它能在集群中将Tensor从一种排布转换成另外一种排布。所有重排布操作，都会被分解成“集合通信+split+concat”等算子组合。</p>
-<ul>
-<li>关于 Tensor layout <strong>2 个 节点的重排</strong><ul>
-<li><p><strong>AllToAll</strong>：行 &lt;–&gt; 列 通过 </p>
-</li>
-<li><p><strong>All gather</strong>：行/列 –&gt; 复制 </p>
-</li>
-<li><p><strong>Slice</strong>：复制 –&gt; 行/列  </p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><img data-fancybox="gallery" data-sizes="auto" data-src="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_2_zh.png" alt="image" class="lazyload"></p>
-<ul>
-<li>关于 Tensor layout <strong>4 个节点的重排</strong><ul>
-<li><p><strong>分组 AllGather</strong>: </p>
-<ul>
-<li><p>  行/列切分 + 复制 –&gt; 复制 （复制-&gt; 复制要分组， 列–&gt; 复制为 AllGather）</p>
-</li>
-<li><p>行列切分 –&gt; 行切分 + 复制 （列切分 –&gt; 复制 为 AllGather）</p>
-</li>
-</ul>
-</li>
-<li><p><strong>Slice</strong>：</p>
-<ul>
-<li>复制 –&gt; 行列切分、行切分+复制、列切分+复制</li>
-</ul>
-</li>
-<li><p><strong>分组 AllToAll</strong>：</p>
-<ul>
-<li>行切分 + 复制  &lt; – &gt; 列切分 + 复制</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><img data-fancybox="gallery" data-sizes="auto" data-src="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_3_zh.png" alt="image" class="lazyload"></p>
-</li>
-</ul>
-<h3 id="设置切分策略"><a href="#设置切分策略" class="headerlink" title="设置切分策略"></a>设置切分策略</h3><ul>
-<li>用户可以使用 <strong>shard()</strong> 接口来设置算子的切分策略，该接口可以描述算子的每个输入张量的每个维度如何切分。<ul>
-<li>比如MatMul.shard(((a, b), (b, c))) 表示MatMul有两个输入张量<ul>
-<li><p>第一个输入张量的行均匀切分 a 份，列均匀切分 b 份；</p>
-</li>
-<li><p>对第二个输入张量的行均匀切分 b 份，列均匀切分 a 份。</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><strong>举个例子</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> mindspore.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">from</span> mindspore <span class="hljs-keyword">import</span> ops<br><span class="hljs-keyword">import</span> mindspore <span class="hljs-keyword">as</span> ms<br><br>ms.set_auto_parallel_context(parallel_mode=<span class="hljs-string">&quot;semi_auto_parallel&quot;</span>, device_num=<span class="hljs-number">4</span>)<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DenseMatMulNet</span>(<span class="hljs-params">nn.Cell</span>):</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span>(<span class="hljs-params">self</span>):</span><br>        <span class="hljs-built_in">super</span>(DenseMutMulNet, self).__init__()<br>        self.matmul1 = ops.MatMul.shard(((<span class="hljs-number">4</span>, <span class="hljs-number">1</span>), (<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)))<br>        self.matmul2 = ops.MatMul.shard(((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>), (<span class="hljs-number">1</span>, <span class="hljs-number">4</span>)))<br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">construct</span>(<span class="hljs-params">self, x, w, v</span>):</span><br>        y = self.matmul1(x, w)<br>        z = self.matmul2(y, v)<br>        <span class="hljs-keyword">return</span> z<br><br></code></pre></td></tr></table></figure>
-
-<ul>
-<li><p>在以上例子中，用户在4个卡上计算两个连续的二维矩阵乘：<code>Z = (X * W) * V</code> 。第一个矩阵乘<code>Y = X * W</code>，用户想把 X(本例中是数据）按行切4份（即数据并行）；而第二个矩阵乘<code>Z = Y * V</code>，用户想把V（本例中是权重）按列切4份（即模型并行)</p>
-</li>
-<li><p>需要注意的是，并不是行切分就是数据并行， 列切分就是模型并行。这个映射关系不是唯一的。</p>
-</li>
-<li><p>如下图所示</p>
-<ul>
-<li><p>在第一个矩阵乘中，即 $X * W$ 中对 X 进行了行切分，所以需要对权重 W 进行复制以保证切分前后结果正确</p>
-</li>
-<li><p>在第二个矩阵乘中，即 $Y * V$ 中对 V 进行了列切分，所以需要对中间结果 Y 进行复制以保证切分前后结果正确</p>
-</li>
-<li><p>第一个算子的输出为 $[Y_1, Y_2 ,Y_3, Y_4]$ 分别分布在 4张卡上，而第二个算子输入期望其在一张卡上，因此需要做 AllToAll 对齐，本质上就是 列切分 -&gt; 复制， 才得以继续后续的运算。</p>
-</li>
-</ul>
-</li>
-<li><p><img src="https://mindspore.cn/tutorials/experts/zh-CN/r1.9/_images/operator_parallel_image_4_zh.png" title alt="image" width="678">“ title=”” alt=”image” width=”678”&gt;</p>
-</li>
-</ul>
-
   </article>
 
   
@@ -300,8 +198,6 @@
   
   <div class="nexmoe-post-meta nexmoe-rainbow">
     
-    
-        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-mindSpore/" rel="tag">分布式训练, 机器学习, mindSpore</a>
     
 </div>
 
@@ -334,13 +230,6 @@
                         
                           
                           
-                              <button class="mdui-fab catalog" style="overflow:unset;">
-                                  <i class="nexmoefont icon-i-catalog"></i>
-                                  <div class="nexmoe-toc">
-                                      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%97%E5%AD%90%E7%BA%A7%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.</span> <span class="toc-text">算子级并行</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">基本原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Tensor-Layout"><span class="toc-number">1.1.1.</span> <span class="toc-text">Tensor Layout</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E5%88%87%E5%88%86%E7%AD%96%E7%95%A5"><span class="toc-number">1.1.2.</span> <span class="toc-text">设置切分策略</span></a></li></ol></li></ol></li></ol>
-                                  </div>
-                              </button>
-                          
                           
                       
                     
@@ -369,7 +258,7 @@
 
  
 
-<script async src="/js/app.js?v=1675349254905"></script>
+<script async src="/js/app.js?v=1675699611753"></script>
 
 
 
