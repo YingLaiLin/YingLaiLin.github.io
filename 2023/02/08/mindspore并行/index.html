@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>mindspore并行 - 土鸡莱莱的博客</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="摸鱼">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="MindSpore 并行集合通信broadcast（一对多）  应用场景  数据并行的参数初始化，以确保每张卡上的初始参数一致  分布式训练 parameter server 中 master 节点数据广播到 worker 节点   Scatter（一对多）  在集群内把一个节点自身的数据发散到其他节点上。与Broadcast不同的是Broadcast把主节点0的数据发送给所有节点，而Scat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mindspore并行">
+<meta property="og:url" content="https://yinglailin.github.io/2023/02/08/mindspore%E5%B9%B6%E8%A1%8C/index.html">
+<meta property="og:site_name" content="土鸡莱莱的博客">
+<meta property="og:description" content="MindSpore 并行集合通信broadcast（一对多）  应用场景  数据并行的参数初始化，以确保每张卡上的初始参数一致  分布式训练 parameter server 中 master 节点数据广播到 worker 节点   Scatter（一对多）  在集群内把一个节点自身的数据发散到其他节点上。与Broadcast不同的是Broadcast把主节点0的数据发送给所有节点，而Scat">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-35-40-image.png">
+<meta property="og:image" content="file:///Users/leon/Library/Application%20Support/marktext/images/2023-02-13-01-43-20-image.png">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-8c7a7283c7225e4709f7f91b00d7dd5c_1440w.webp">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-36-04-image.png">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-36-17-image.png">
+<meta property="og:image" content="file:///Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-47-39-image.png">
+<meta property="og:image" content="file:///Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-46-52-image.png">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-17-51-image.png">
+<meta property="og:image" content="https://www.mindspore.cn/docs/zh-CN/r2.0.0-alpha/_images/auto_parallel.png">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-38-17-image.png">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-38-26-image.png">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-09-00-52-09-image.png">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-42-59-image.png">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-43-17-image.png">
+<meta property="og:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-45-31-image.png">
+<meta property="og:image" content="file:///Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-45-52-image.png">
+<meta property="article:published_time" content="2023-02-08T00:27:42.000Z">
+<meta property="article:modified_time" content="2023-02-13T14:22:33.788Z">
+<meta property="article:author" content="YingLai Lin">
+<meta property="article:tag" content="摸鱼">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yinglailin.github.io/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-35-40-image.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1676391743723">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1676391743723">
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="YingLai Lin" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="YingLai Lin">
+            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin" alt="YingLai Lin">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>42</div>
+        <div><span>标签</span>15</div>
+        <div><span>分类</span>5</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/YingLaiLin" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/">Java 后端</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/分布式/">分布式</a>
+          <span class="category-list-count">5</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/分布式系统，机器学习/">分布式系统，机器学习</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/">搜索</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%EF%BC%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">分布式系统，机器学习</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/" style="font-size: 10px;">分布式训练</a> <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" style="font-size: 13.33px;">大模型</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 YingLai Lin
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br><a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://i.dawnlab.me/c0268c1e6cfd0863d6ba35be1575941a.png" width="150px"></a><script data-ad-client="ca-pub-2058306854838448" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="mindspore并行" class="lazyload">
+              <h1>mindspore并行</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年02月08日</a>
+    <a><i class="nexmoefont icon-areachart"></i>802 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 3 分钟</a>
+</div>
+
+      
+
+      <span id="more"></span>
+
+<h1 id="MindSpore-并行"><a href="#MindSpore-并行" class="headerlink" title="MindSpore 并行"></a>MindSpore 并行</h1><h2 id="集合通信"><a href="#集合通信" class="headerlink" title="集合通信"></a>集合通信</h2><p><strong>broadcast（一对多）</strong></p>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-35-40-image.png"></p>
+<p><strong>应用场景</strong></p>
+<ul>
+<li><p>数据并行的参数初始化，以确保每张卡上的初始参数一致</p>
+</li>
+<li><p>分布式训练 parameter server 中 master 节点数据广播到 worker 节点</p>
+</li>
+</ul>
+<p><strong>Scatter（一对多）</strong></p>
+<ul>
+<li><p>在集群内把一个节点自身的数据发散到其他节点上。与Broadcast不同的是Broadcast把主节点0的数据发送给所有节点，而Scatte r则是将数据的<strong>进行切片再分发给集群内所有的节点</strong>，如下所示，主节点 0 将数据分为 4 份后分发到节点 0 - 3。</p>
+</li>
+<li><img title src="file:///Users/leon/Library/Application%20Support/marktext/images/2023-02-13-01-43-20-image.png" alt width="429">
+
+<p><strong>应用场景</strong></p>
+</li>
+<li><p>模型并行的初始化，将模型 scatter 到不同的 GPU 上。</p>
+</li>
+</ul>
+<p><strong>AllReduce（多对多）</strong></p>
+<ul>
+<li>AllReduce操作可通过在<strong>主节点上执行 Reduce + Broadcast</strong>或 <strong>ReduceScatter + AllGather</strong>实现，如下图所示：</li>
+</ul>
+<img title src="https://pic1.zhimg.com/80/v2-8c7a7283c7225e4709f7f91b00d7dd5c_1440w.webp" alt width="506">
+
+<p><strong>应用场景</strong></p>
+<ul>
+<li><p>AllReduce 应用于数据并行</p>
+</li>
+<li></li>
+</ul>
+<p><strong>AllGather（多对多）</strong></p>
+<ul>
+<li><p>数据收集后，在行方向上进行拼接（矩阵的行切分）</p>
+</li>
+<li><p>设备排序方式与数据排序相同</p>
+<ul>
+<li>rank 0 在 0 块</li>
+</ul>
+</li>
+</ul>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-36-04-image.png"></p>
+<p><strong>Reduce-Scatter</strong></p>
+<ul>
+<li><p>AllReduce（sum） + Scatter</p>
+</li>
+<li><p>首先将每卡的数据进行求和，再沿着 device 将数据按行切分并分发到对应设备</p>
+</li>
+</ul>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-36-17-image.png"></p>
+<h2 id="数据并行"><a href="#数据并行" class="headerlink" title="数据并行"></a>数据并行</h2><h2 id="模型并行"><a href="#模型并行" class="headerlink" title="模型并行"></a>模型并行</h2><h3 id="层间模型并行"><a href="#层间模型并行" class="headerlink" title="层间模型并行"></a>层间模型并行</h3><p><strong>概念</strong></p>
+<p>模型以层为单位切分到多个设备，如下图所示，不同层的权重矩阵被分配到不同设备</p>
+<img title src="file:///Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-47-39-image.png" alt width="365">
+
+<h3 id="层内模型并行"><a href="#层内模型并行" class="headerlink" title="层内模型并行"></a>层内模型并行</h3><p><strong>概念</strong></p>
+<p>每层的模型参数切分到多个设备，如下图所示，权重矩阵被切分到 4 个设备上：</p>
+<img title src="file:///Users/leon/Library/Application%20Support/marktext/images/2023-02-08-00-46-52-image.png" alt width="485">
+
+<h2 id="手动模型并行"><a href="#手动模型并行" class="headerlink" title="手动模型并行"></a>手动模型并行</h2><h3 id="主要难点"><a href="#主要难点" class="headerlink" title="主要难点"></a>主要难点</h3><p>手动模型并行的难点在于需要考虑如下点：</p>
+<ul>
+<li><p>内存上限</p>
+<ul>
+<li>模型切分后，能够在单卡内运行</li>
+</ul>
+</li>
+<li><p>通信代价</p>
+<ul>
+<li>集合通信产生的耗时</li>
+</ul>
+</li>
+<li><p>张量排布</p>
+<ul>
+<li>张量切分后能够保证数据逻辑形式正确</li>
+</ul>
+</li>
+<li></li>
+</ul>
+<h3 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h3><p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-17-51-image.png"></p>
+<p>如上图所示，这里模型是以列切分，因此需要插入 all_reduce 以实现计算逻辑等价</p>
+<h2 id="自动并行方案"><a href="#自动并行方案" class="headerlink" title="自动并行方案"></a>自动并行方案</h2><h3 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h3><p><img data-fancybox="gallery" data-sizes="auto" data-src="https://www.mindspore.cn/docs/zh-CN/r2.0.0-alpha/_images/auto_parallel.png" alt="自动并行图解" class="lazyload"></p>
+<h3 id="算子切分"><a href="#算子切分" class="headerlink" title="算子切分"></a>算子切分</h3><h3 id="并行模式转换"><a href="#并行模式转换" class="headerlink" title="并行模式转换"></a>并行模式转换</h3><h4 id="数据并行转模型并行"><a href="#数据并行转模型并行" class="headerlink" title="数据并行转模型并行"></a>数据并行转模型并行</h4><p><strong>形式简述：</strong></p>
+<p>$Z = (X \times W) \times V$ , 其中 $X$ 为数据，$W$  和 $V$ 分别代表权重矩阵</p>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-38-17-image.png"></p>
+<p><strong>算子视角：</strong></p>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-38-26-image.png"></p>
+<p><strong>设备视角</strong>:</p>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-09-00-52-09-image.png"></p>
+<ul>
+<li><p>这里使用 All Gather 可以将数据从不同的设备在某个设备上完成聚合，并分发到所有设备上。</p>
+</li>
+<li><p>虽然这里形式上类似 行 =&gt; 列，而在算子级并行中转换是使用 all2all 算子进行转换的。但是需要注意的是， All Gather 收集后分发的数据是相同的，而 ALL2ALL 中不同节点向某一节点收集到的数据是不同的。</p>
+<ul>
+<li><p>当一张卡上只有一块数据时，All2All 和 AllGather 是等价的。</p>
+</li>
+<li><p>当一张卡上有多块数据时，则两者是不相等的。</p>
+</li>
+<li><p>因此，All2All 是 All gather 的超集，其更具备通用性。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>常用场景：</strong></p>
+<p>ReID：</p>
+<p><strong>思考：</strong></p>
+<p>这里数据并行转模型并不是必须的</p>
+<h4 id="模型并行转数据并行"><a href="#模型并行转数据并行" class="headerlink" title="模型并行转数据并行"></a>模型并行转数据并行</h4><p><strong>形式简述</strong></p>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-42-59-image.png"></p>
+<p><strong>算子视角</strong></p>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-43-17-image.png"></p>
+<h3 id="数据并行迭代模型并行样例"><a href="#数据并行迭代模型并行样例" class="headerlink" title="数据并行迭代模型并行样例"></a>数据并行迭代模型并行样例</h3><p><strong>形式简述</strong></p>
+<p><img src="/Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-45-31-image.png"></p>
+<p><strong>算子视角</strong></p>
+<img title src="file:///Users/leon/Library/Application%20Support/marktext/images/2023-02-08-23-45-52-image.png" alt width="666">
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://www.mindspore.cn/docs/zh-CN/r2.0.0-alpha/design/distributed_training_design.html?highlight=%E8%87%AA%E5%8A%A8%E5%B9%B6%E8%A1%8C">分布式并行 &mdash; MindSpore master 文档</a></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>YingLai Lin<br>
+        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2023/02/08/mindspore%E5%B9%B6%E8%A1%8C/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2023&#x2F;02&#x2F;08&#x2F;mindspore%E5%B9%B6%E8%A1%8C&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2023&#x2F;02&#x2F;08&#x2F;mindspore%E5%B9%B6%E8%A1%8C&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'https://yinglailin.github.io/',
+        owner: 'yinglai',
+        admin: 'yinglai'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MindSpore-%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.</span> <span class="toc-text">MindSpore 并行</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1"><span class="toc-number">1.1.</span> <span class="toc-text">集合通信</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.2.</span> <span class="toc-text">数据并行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.3.</span> <span class="toc-text">模型并行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%82%E9%97%B4%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.3.1.</span> <span class="toc-text">层间模型并行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%82%E5%86%85%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.3.2.</span> <span class="toc-text">层内模型并行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.4.</span> <span class="toc-text">手动模型并行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E9%9A%BE%E7%82%B9"><span class="toc-number">1.4.1.</span> <span class="toc-text">主要难点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-number">1.4.2.</span> <span class="toc-text">举个例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%B9%B6%E8%A1%8C%E6%96%B9%E6%A1%88"><span class="toc-number">1.5.</span> <span class="toc-text">自动并行方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="toc-number">1.5.1.</span> <span class="toc-text">整体架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E5%AD%90%E5%88%87%E5%88%86"><span class="toc-number">1.5.2.</span> <span class="toc-text">算子切分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E6%A8%A1%E5%BC%8F%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.5.3.</span> <span class="toc-text">并行模式转换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C%E8%BD%AC%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.5.3.1.</span> <span class="toc-text">数据并行转模型并行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C%E8%BD%AC%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.5.3.2.</span> <span class="toc-text">模型并行转数据并行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C%E8%BF%AD%E4%BB%A3%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C%E6%A0%B7%E4%BE%8B"><span class="toc-number">1.5.4.</span> <span class="toc-text">数据并行迭代模型并行样例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">1.6.</span> <span class="toc-text">参考资料</span></a></li></ol></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1676391743729"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":500},"mobile":{"show":true},"log":false});</script></body>
+
+</html>

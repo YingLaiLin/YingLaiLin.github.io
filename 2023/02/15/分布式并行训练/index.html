@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    
+    <title>分布式并行训练 - 土鸡莱莱的博客</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="摸鱼">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="分布式并行训练并行策略数据并行 简述  数据(global batch) 拆分为N份, 每个节点负责 1&#x2F;N 数据, 并保存所有的 weights  参数更新  将不同节点的梯度数据进行汇聚后, 共同进行参数的更新 同步更新  简述  所有节点计算完成后,再将梯度进行平均, 更新完毕后进行下一个迭代的训练(节点间依赖性强) 基于 All-Reduce 求得平均梯度后,在各个节点上更新本地的参数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式并行训练">
+<meta property="og:url" content="https://yinglailin.github.io/2023/02/15/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83/index.html">
+<meta property="og:site_name" content="土鸡莱莱的博客">
+<meta property="og:description" content="分布式并行训练并行策略数据并行 简述  数据(global batch) 拆分为N份, 每个节点负责 1&#x2F;N 数据, 并保存所有的 weights  参数更新  将不同节点的梯度数据进行汇聚后, 共同进行参数的更新 同步更新  简述  所有节点计算完成后,再将梯度进行平均, 更新完毕后进行下一个迭代的训练(节点间依赖性强) 基于 All-Reduce 求得平均梯度后,在各个节点上更新本地的参数">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-15T00:21:27.000Z">
+<meta property="article:modified_time" content="2023-02-14T16:22:17.695Z">
+<meta property="article:author" content="YingLai Lin">
+<meta property="article:tag" content="分布式训练">
+<meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/highlight.js@9.15.8/styles/atom-one-dark.css,npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css,gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css,npm/hexo-theme-nexmoe@latest/source/lib/mdui_043tiny/css/mdui.css,npm/hexo-theme-nexmoe@latest/source/lib/iconfont/iconfont.css?v=233" crossorigin>
+    <link rel="stylesheet" href="/css/style.css?v=1676391743711">
+     
+    
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1676391743711">
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="YingLai Lin" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="YingLai Lin">
+            <img src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/avatar.png" alt="YingLai Lin" alt="YingLai Lin">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>42</div>
+        <div><span>标签</span>15</div>
+        <div><span>分类</span>5</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/PY.html" title="我的朋友">
+            <i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i>
+            <div class="mdui-list-item-content">
+                我的朋友
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:nexmoe.com" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜索"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://space.bilibili.com/20238211" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/YingLaiLin" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(25, 23, 23);background-color: rgba(25, 23, 23, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a>
+    </div>
+</div>
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <h3 class="nexmoe-widget-title">文章分类</h3>
+    <div class="nexmoe-widget">
+
+      <ul class="category-list">
+
+        
+
+
+        
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/">Java 后端</a>
+          <span class="category-list-count">11</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/分布式/">分布式</a>
+          <span class="category-list-count">5</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/分布式系统，机器学习/">分布式系统，机器学习</a>
+          <span class="category-list-count">1</span>
+        </li>
+
+        
+
+        <li class="category-list-item">
+          <a class="category-list-link" href="/categories/Java-后端/搜索/">搜索</a>
+          <span class="category-list-count">4</span>
+        </li>
+
+        
+      </ul>
+
+    </div>
+  </div>
+
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/ES/" style="font-size: 20px;">ES</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java/" style="font-size: 16.67px;">Java</a> <a href="/tags/Java-Exception/" style="font-size: 10px;">Java Exception</a> <a href="/tags/Java-Method-Call/" style="font-size: 10px;">Java Method Call</a> <a href="/tags/classpath/" style="font-size: 10px;">classpath</a> <a href="/tags/github-pages/" style="font-size: 10px;">github pages</a> <a href="/tags/%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" style="font-size: 13.33px;">冷热分离</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%EF%BC%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">分布式系统，机器学习</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/" style="font-size: 10px;">分布式训练</a> <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" style="font-size: 13.33px;">大模型</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 16.67px;">数据库</a> <a href="/tags/%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96/" style="font-size: 13.33px;">架构优化</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2023 YingLai Lin
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        <br><a target="_blank" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="https://i.dawnlab.me/c0268c1e6cfd0863d6ba35be1575941a.png" width="150px"></a><script data-ad-client="ca-pub-2058306854838448" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: 66.66666666666666%;"> 
+              <img data-src="https://cdn.jsdelivr.net/gh/nexmoe/nexmoe.github.io@latest/images/cover/5c3aec85a4343.jpg" data-sizes="auto" alt="分布式并行训练" class="lazyload">
+              <h1>分布式并行训练</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2023年02月15日</a>
+    <a><i class="nexmoefont icon-areachart"></i>1.5k 字</a>
+    <a><i class="nexmoefont icon-time-circle-fill"></i>大概 6 分钟</a>
+</div>
+
+      
+
+      <span id="more"></span>
+
+<h1 id="分布式并行训练"><a href="#分布式并行训练" class="headerlink" title="分布式并行训练"></a>分布式并行训练</h1><h2 id="并行策略"><a href="#并行策略" class="headerlink" title="并行策略"></a>并行策略</h2><h3 id="数据并行"><a href="#数据并行" class="headerlink" title="数据并行"></a>数据并行</h3><ul>
+<li><p>简述</p>
+<ul>
+<li><p>数据(global batch) 拆分为N份, 每个节点负责 1/N 数据, 并保存所有的 weights</p>
+</li>
+<li><p>参数更新</p>
+<ul>
+<li>将不同节点的梯度数据进行汇聚后, 共同进行参数的更新<ul>
+<li><p>同步更新</p>
+<ul>
+<li><p>简述</p>
+<ul>
+<li>所有节点计算完成后,再将梯度进行平均, 更新完毕后进行下一个迭代的训练(节点间依赖性强)</li>
+<li>基于 All-Reduce 求得平均梯度后,在各个节点上更新本地的参数</li>
+</ul>
+</li>
+<li><p>优缺点</p>
+<ul>
+<li><p>易收敛</p>
+<ul>
+<li>所有节点使用的模型参数相同,训练过程容易收敛</li>
+</ul>
+</li>
+<li><p>容错率低</p>
+<ul>
+<li>要求所有节点都能正常工作, 若出现故障, 需要从 checkpoint 处重新训练</li>
+</ul>
+</li>
+<li><p>训练速度存在瓶颈</p>
+<ul>
+<li>训练瓶颈点在于执行最慢的节点,</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>异步更新</p>
+<ul>
+<li><p>简述</p>
+<ul>
+<li>每个节点计算完毕后, 独立进行参数更新,并启动下一个迭代的训练</li>
+<li>仅在 Parameter Server 模式下存在</li>
+</ul>
+</li>
+<li><p>优缺点</p>
+<ul>
+<li><p>容错率高</p>
+<ul>
+<li>可通过 N + M 模型容忍少量节点的故障</li>
+</ul>
+</li>
+<li><p>可能收敛失败</p>
+<ul>
+<li>参数不一致影响梯度,从而导致收敛问题</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>半同步更新</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>常见算法</p>
+<ul>
+<li><p>DP(Data Parallel)</p>
+</li>
+<li><p>DDP(Distributed Data Parallel)</p>
+<ul>
+<li>参数按 bucket 拆分为更细粒度</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="模型并行"><a href="#模型并行" class="headerlink" title="模型并行"></a>模型并行</h3><ul>
+<li><p>张量并行(即层内并行)</p>
+<ul>
+<li><p>简述</p>
+<ul>
+<li><p>单算子内的模型拆分</p>
+<ul>
+<li>A 矩阵横向拆分为 2 个部分, X 矩阵进行广播</li>
+<li>在 Dropout 前插入 All-Reduce 进行聚合</li>
+</ul>
+</li>
+<li><p>高带宽需求</p>
+<ul>
+<li>层内并行前后 Layer 计算存在依赖, 故通信和计算必须串行执行, 不像数据并行一样存在计算和通信的 overlap.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>优缺点</p>
+<ul>
+<li>切分要求高<ul>
+<li><p>未切分层需保存所有 weights, 如果切分层比例过低, 会限制伸缩能力</p>
+</li>
+<li><p>加速比低</p>
+<ul>
+<li>被切分层的输入/输出部分需引入集合通信, 从而限制加速比</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>常见算法</p>
+<ul>
+<li>GShard</li>
+</ul>
+</li>
+<li><p>应用场景</p>
+<ul>
+<li>基于 MoE 的 Transformer</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>流水线并行(即层间并行)</p>
+<ul>
+<li><p>简述</p>
+<ul>
+<li><p>将模型拆分为多个 stage, 其中每个 device 部署若干个 stage, 最后进行串联</p>
+</li>
+<li><p>通常每个 stage 的前后向部署在相同的 device, 避免跨 device 的 weights 传输</p>
+</li>
+<li><p>将 mini-batch 切分为多个 micro-batch, 减少空转</p>
+<ul>
+<li>同步训练需要等待前向训练完成,再进行反向训练,因此存在空转</li>
+<li>bubble 时长为 (K-1)/(M+K-1) , 即 M 为非空转,训练 micro-batch 的时长, 因为其前向计算就可以计算反向,因而避免空转</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>优缺点</p>
+<ul>
+<li><p>通信量低</p>
+<ul>
+<li>通信仅发生在段与段之间</li>
+</ul>
+</li>
+<li><p>设备利用率较低</p>
+<ul>
+<li>存在 bubble, 若段切分不均匀, 会加速利用率的降低</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>常见算法</p>
+<ul>
+<li><p>GPipe</p>
+</li>
+<li><p>PipeDream</p>
+<ul>
+<li>1F1B 流水, 每个 device 交替执行 micro-batch 的正反向, 减少 activation 的内存占用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>应用场景</p>
+<ul>
+<li>深度大, 宽度一般的网络</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>专家并行</p>
+<ul>
+<li><p>简述</p>
+<ul>
+<li>切分 experts 到不同device, 而 expert 数量可以随着集群规模拓展, 拓展性强</li>
+<li>MoE 前后需要 All2All 算子进行全局通信</li>
+</ul>
+</li>
+<li><p>优缺点</p>
+<ul>
+<li>串行性<ul>
+<li>MoE 前后需要基于 All2All 算子进行全局通信, 这里的通信与后续计算是串行的</li>
+<li>All2All 性能受集群规模影响, 限制了 MoE 模型的拓展性</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="优化器并行"><a href="#优化器并行" class="headerlink" title="优化器并行"></a>优化器并行</h3><h3 id="自动并行"><a href="#自动并行" class="headerlink" title="自动并行"></a>自动并行</h3><h3 id="混合并行"><a href="#混合并行" class="headerlink" title="混合并行"></a>混合并行</h3><h2 id="mindspore-并行"><a href="#mindspore-并行" class="headerlink" title="mindspore 并行"></a>mindspore 并行</h2><h3 id="并行模型"><a href="#并行模型" class="headerlink" title="并行模型"></a>并行模型</h3><ul>
+<li><p>数据并行</p>
+<ul>
+<li>定义脚本同单机</li>
+</ul>
+</li>
+<li><p>半自动并行</p>
+<ul>
+<li>手动指定 shard 策略</li>
+</ul>
+</li>
+<li><p>全自动并行</p>
+</li>
+<li><p>混合并行</p>
+</li>
+</ul>
+<h2 id="相关算法"><a href="#相关算法" class="headerlink" title="相关算法"></a>相关算法</h2><h3 id="MoE"><a href="#MoE" class="headerlink" title="MoE"></a>MoE</h3><h2 id="显存优化策略"><a href="#显存优化策略" class="headerlink" title="显存优化策略"></a>显存优化策略</h2><h3 id="重计算"><a href="#重计算" class="headerlink" title="重计算"></a>重计算</h3><ul>
+<li><p>简述</p>
+<ul>
+<li>以时间换空间, 降低内存占用峰值(activations)</li>
+<li>NN 反向计算需要依赖正向的计算结果, 而基于 checkpoint 在反向计算时重新计算正向的 activations, 可以减少训练过程中的内存需要</li>
+</ul>
+</li>
+<li><p>选择策略</p>
+<ul>
+<li>优先选择内存大,计算耗时小的算子进行重计算</li>
+</ul>
+</li>
+<li><p>应用场景</p>
+</li>
+</ul>
+<h3 id="参数-Sharding"><a href="#参数-Sharding" class="headerlink" title="参数 Sharding"></a>参数 Sharding</h3><ul>
+<li><p>简述</p>
+<ul>
+<li><p>每个 Device 上仅保存 1/N 的参数(权重和优化器)</p>
+</li>
+<li><p>权重和优化器可以分别做 sharding</p>
+<ul>
+<li><p>权重切分</p>
+<ul>
+<li>权重计算前需要基于 AllGather 获取完整权重</li>
+<li>更新参数前, 使用1/N 的梯度进行本 Device 的参数更新(基于 ReduceScatter)</li>
+</ul>
+</li>
+<li><p>优化器切分</p>
+<ul>
+<li><p>若切分</p>
+<ul>
+<li>使用1/N的梯度进行优化器参数的计算和更新</li>
+</ul>
+</li>
+<li><p>若不切分</p>
+<ul>
+<li>优化器计算后增加AllGather用于更新完整的权重</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>常见算法</p>
+<ul>
+<li>ZERO</li>
+</ul>
+</li>
+<li><p>疑问</p>
+<ul>
+<li>如何与模型并行等传统方式并用?</li>
+<li>更新时为何使用1/N 的梯度?</li>
+</ul>
+</li>
+</ul>
+<h3 id="Swapping"><a href="#Swapping" class="headerlink" title="Swapping"></a>Swapping</h3><ul>
+<li><p>简述</p>
+<ul>
+<li><p>将 Device 内存中的数据交换到容量更大的 Host 内存中, 降低 Device 内存的使用</p>
+</li>
+<li><p>Swapping 对象</p>
+<ul>
+<li><p>参数</p>
+<ul>
+<li>权重</li>
+<li>优化器参数</li>
+</ul>
+</li>
+<li><p>梯度</p>
+</li>
+<li><p>activations</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>常见算法</p>
+<ul>
+<li>Zero-Offload</li>
+</ul>
+</li>
+</ul>
+<h3 id="混合精度训练"><a href="#混合精度训练" class="headerlink" title="混合精度训练"></a>混合精度训练</h3><h3 id="梯度累加"><a href="#梯度累加" class="headerlink" title="梯度累加"></a>梯度累加</h3><h2 id="实战概念"><a href="#实战概念" class="headerlink" title="实战概念"></a>实战概念</h2><h3 id="切分策略转换"><a href="#切分策略转换" class="headerlink" title="切分策略转换"></a>切分策略转换</h3><ul>
+<li>数据并行=&gt;模型并行</li>
+<li>模型并行=&gt;数据并行</li>
+</ul>
+<h3 id="实战例子"><a href="#实战例子" class="headerlink" title="实战例子"></a>实战例子</h3><ul>
+<li>DNN</li>
+<li>Transformer</li>
+</ul>
+<h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><h3 id="通信原语"><a href="#通信原语" class="headerlink" title="通信原语"></a>通信原语</h3><h3 id="张量排布"><a href="#张量排布" class="headerlink" title="张量排布"></a>张量排布</h3><ul>
+<li>自动并行下自动进行张量间的对齐</li>
+</ul>
+<h3 id="图切分"><a href="#图切分" class="headerlink" title="图切分"></a>图切分</h3><ul>
+<li>切分策略<ul>
+<li>尽量减少通信</li>
+</ul>
+</li>
+</ul>
+<h3 id="动静统一"><a href="#动静统一" class="headerlink" title="动静统一"></a>动静统一</h3><ul>
+<li>静态图和动态图算子接口一致</li>
+</ul>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><h3 id="Megatron-LM"><a href="#Megatron-LM" class="headerlink" title="Megatron-LM"></a>Megatron-LM</h3><ul>
+<li><p>3D 并行(DP+TP+PP) + 重计算</p>
+</li>
+<li><p>GPT-3 with 1K GPU</p>
+</li>
+<li><p>简述</p>
+<ul>
+<li><p>batch 1</p>
+<ul>
+<li><p>stage1</p>
+<ul>
+<li><p>Transformer layer 1</p>
+<ul>
+<li><p>MLP</p>
+<ul>
+<li>重计算</li>
+</ul>
+</li>
+<li><p>Attention</p>
+<ul>
+<li>重计算</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Transformer layer …</p>
+</li>
+<li><p>Transformer layer n</p>
+</li>
+</ul>
+</li>
+<li><p>stage …</p>
+</li>
+<li><p>stage n</p>
+</li>
+</ul>
+</li>
+<li><p>batch …</p>
+</li>
+<li><p>batch n</p>
+</li>
+</ul>
+</li>
+<li><p>设计理解</p>
+<ul>
+<li>高加速比<ul>
+<li>将模型拆分到可数据并行的维度</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Switch-Transformer"><a href="#Switch-Transformer" class="headerlink" title="Switch-Transformer"></a>Switch-Transformer</h3><ul>
+<li>DP + TP + EP</li>
+</ul>
+<h2 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h2><h3 id="数据并行优先-模型可部署"><a href="#数据并行优先-模型可部署" class="headerlink" title="数据并行优先(模型可部署)"></a>数据并行优先(模型可部署)</h3><ul>
+<li>先看多少卡可以放得下一个模型, 这样可以尽量多地切分出高的数据并行度</li>
+</ul>
+<h3 id="模型并行-1"><a href="#模型并行-1" class="headerlink" title="模型并行"></a>模型并行</h3><ul>
+<li>需要高带宽</li>
+</ul>
+<h3 id="流水并行"><a href="#流水并行" class="headerlink" title="流水并行"></a>流水并行</h3><ul>
+<li>减少 stage, 增加 micro-batch, 减少 bubble time</li>
+<li>切分点放在通信需求少的地方</li>
+<li>各节点计算要均衡</li>
+</ul>
+<h3 id="Swapping-1"><a href="#Swapping-1" class="headerlink" title="Swapping"></a>Swapping</h3><ul>
+<li>Host-Device 带宽高, 和 GPU 带宽差距小</li>
+<li>CPU 内存带宽低且不支持向量加速, 避免将计算放在 CPU 侧</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><h3 id="如何训练千亿-万亿大模型"><a href="#如何训练千亿-万亿大模型" class="headerlink" title="如何训练千亿/万亿大模型"></a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/542596233">如何训练千亿/万亿大模型</a></h3>
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>本文作者：</strong>YingLai Lin<br>
+        <strong>本文链接：</strong><a href="https://yinglailin.github.io/2023/02/15/%E5%88%86%E5%B8%83%E5%BC%8F%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83/" title="https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2023&#x2F;02&#x2F;15&#x2F;%E5%88%86%E5%B8%83%E5%BC%8F%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;yinglailin.github.io&#x2F;2023&#x2F;02&#x2F;15&#x2F;%E5%88%86%E5%B8%83%E5%BC%8F%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+        <a class="nexmoefont icon-appstore-fill -link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/" rel="tag">分布式训练</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '80b2453b6d5f37ad6225',
+        clientSecret: '43e99fa852795c9a7b3eb924b2558c64b84bbdeb',
+        id: window.location.pathname,
+        repo: 'https://yinglailin.github.io/',
+        owner: 'yinglai',
+        admin: 'yinglai'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                        
+                          
+                          
+                              <button class="mdui-fab catalog" style="overflow:unset;">
+                                  <i class="nexmoefont icon-i-catalog"></i>
+                                  <div class="nexmoe-toc">
+                                      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83"><span class="toc-number">1.</span> <span class="toc-text">分布式并行训练</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E7%AD%96%E7%95%A5"><span class="toc-number">1.1.</span> <span class="toc-text">并行策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.1.1.</span> <span class="toc-text">数据并行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.1.2.</span> <span class="toc-text">模型并行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E5%99%A8%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.1.3.</span> <span class="toc-text">优化器并行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.1.4.</span> <span class="toc-text">自动并行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.1.5.</span> <span class="toc-text">混合并行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mindspore-%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.2.</span> <span class="toc-text">mindspore 并行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">并行模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95"><span class="toc-number">1.3.</span> <span class="toc-text">相关算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MoE"><span class="toc-number">1.3.1.</span> <span class="toc-text">MoE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%98%BE%E5%AD%98%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-number">1.4.</span> <span class="toc-text">显存优化策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%AE%A1%E7%AE%97"><span class="toc-number">1.4.1.</span> <span class="toc-text">重计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0-Sharding"><span class="toc-number">1.4.2.</span> <span class="toc-text">参数 Sharding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Swapping"><span class="toc-number">1.4.3.</span> <span class="toc-text">Swapping</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E8%AE%AD%E7%BB%83"><span class="toc-number">1.4.4.</span> <span class="toc-text">混合精度训练</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A2%AF%E5%BA%A6%E7%B4%AF%E5%8A%A0"><span class="toc-number">1.4.5.</span> <span class="toc-text">梯度累加</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E6%A6%82%E5%BF%B5"><span class="toc-number">1.5.</span> <span class="toc-text">实战概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E5%88%86%E7%AD%96%E7%95%A5%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.5.1.</span> <span class="toc-text">切分策略转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E4%BE%8B%E5%AD%90"><span class="toc-number">1.5.2.</span> <span class="toc-text">实战例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-number">1.6.</span> <span class="toc-text">基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E4%BF%A1%E5%8E%9F%E8%AF%AD"><span class="toc-number">1.6.1.</span> <span class="toc-text">通信原语</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%A0%E9%87%8F%E6%8E%92%E5%B8%83"><span class="toc-number">1.6.2.</span> <span class="toc-text">张量排布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E5%88%87%E5%88%86"><span class="toc-number">1.6.3.</span> <span class="toc-text">图切分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E9%9D%99%E7%BB%9F%E4%B8%80"><span class="toc-number">1.6.4.</span> <span class="toc-text">动静统一</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.7.</span> <span class="toc-text">实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Megatron-LM"><span class="toc-number">1.7.1.</span> <span class="toc-text">Megatron-LM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Switch-Transformer"><span class="toc-number">1.7.2.</span> <span class="toc-text">Switch-Transformer</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="toc-number">1.8.</span> <span class="toc-text">设计原则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C%E4%BC%98%E5%85%88-%E6%A8%A1%E5%9E%8B%E5%8F%AF%E9%83%A8%E7%BD%B2"><span class="toc-number">1.8.1.</span> <span class="toc-text">数据并行优先(模型可部署)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C-1"><span class="toc-number">1.8.2.</span> <span class="toc-text">模型并行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E5%B9%B6%E8%A1%8C"><span class="toc-number">1.8.3.</span> <span class="toc-text">流水并行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Swapping-1"><span class="toc-number">1.8.4.</span> <span class="toc-text">Swapping</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">1.9.</span> <span class="toc-text">参考资料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AE%AD%E7%BB%83%E5%8D%83%E4%BA%BF-%E4%B8%87%E4%BA%BF%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.9.1.</span> <span class="toc-text">如何训练千亿&#x2F;万亿大模型</span></a></li></ol></li></ol></li></ol>
+                                  </div>
+                              </button>
+                          
+                          
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜索" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/combine/npm/lazysizes@5.1.0/lazysizes.min.js,npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1676391743718"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":200,"height":500},"mobile":{"show":true},"log":false});</script></body>
+
+</html>
